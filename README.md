@@ -12,6 +12,10 @@ _단순 "이렇게 하세요"가 아니라 — **무엇을 / 왜 썼고 / 무엇
 ![Sanitized](https://img.shields.io/badge/secrets-0%20유출-success)
 ![Examples](https://img.shields.io/badge/examples-free%20to%20use-lightgrey)
 
+### 🌐 [웹으로 보기 — 문서 사이트 바로가기](https://ihan0316.github.io/claude-code-toolkit/)
+
+사이드바·검색·다이어그램이 있는 웹 문서로 따라 하기 편합니다. (저장소 markdown을 그대로 렌더 — 단일 소스)
+
 </div>
 
 ---
