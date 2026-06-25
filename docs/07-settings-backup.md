@@ -26,6 +26,7 @@
 | 🔔 `inputNeededNotifEnabled` | `true` | 입력이 필요할 때 알림(자리를 비울 때 유용) |
 | 🔔 `agentPushNotifEnabled` | `true` | 에이전트 작업 완료 시 푸시 알림 |
 | 🛰️ `remoteControlAtStartup` | `true` | 시작 시 원격 제어 활성화 |
+| 🔕 `skipWorkflowUsageWarning` | `true` | 워크플로 사용량 경고 대화상자 생략(UX) |
 
 전체 예시는 저장소의 [examples/settings.json](../examples/settings.json)에서 확인할 수 있습니다.
 
