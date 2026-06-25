@@ -174,7 +174,7 @@ claude-code-toolkit/
 
 ## 📜 라이선스 / 출처
 
-- 직접 작성한 훅·문서·설정 예제는 **자유롭게 가져다 쓰세요.**
+- 라이선스: **[MIT](LICENSE)** — 직접 작성한 훅·문서·설정 예제는 자유롭게 가져다 쓰세요.
 - 외부 플러그인/스킬(예: [`caveman`](https://github.com/JuliusBrussee/caveman))은 각 출처의 라이선스를 따릅니다. 문서에 출처를 명시했습니다.
 
 <div align="center">

@@ -64,10 +64,11 @@
   var mermaidReady = null;
 
   function slugify(text) {
+    // GitHub 호환: 공백을 개별 하이픈으로(붕괴 금지) — '—'·'&'·'/' 제거 후 남는 이중 공백이 이중 하이픈이 됨
     return String(text).trim().toLowerCase()
       .replace(/[‍️]/g, "")
       .replace(/[^\p{L}\p{N}\s-]/gu, "")
-      .replace(/\s+/g, "-");
+      .replace(/\s/g, "-");
   }
   function escapeHtml(s) {
     return String(s).replace(/[&<>"]/g, function (c) {
@@ -308,6 +309,7 @@
   function setupTheme() {
     var saved = null; try { saved = localStorage.getItem("cct-theme"); } catch (e) {}
     if (saved) document.documentElement.setAttribute("data-theme", saved);
+    else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches) document.documentElement.setAttribute("data-theme", "light");
     syncThemeUI();
     document.getElementById("themeBtn").addEventListener("click", function () {
       var next = currentTheme() === "dark" ? "light" : "dark";
