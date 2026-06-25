@@ -8,23 +8,36 @@
 <meta property="og:title" content="Claude Code 실전 셋업 툴킷" />
 <meta property="og:description" content="훅·스킬·메모리·자동화·MCP·플러그인 설정 모음. 웹으로 보면서 따라 하세요." />
 <meta property="og:type" content="website" />
+<meta name="theme-color" content="#0a0b10" />
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛠️</text></svg>" />
 <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=JetBrains+Mono:wght@400;500;700&display=swap" />
 <link id="hljs-theme" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11.9.0/styles/github-dark.min.css" />
 <link rel="stylesheet" href="assets/app.css" />
 </head>
 <body>
+<div class="bg-grid" aria-hidden="true"></div>
+<div class="bg-grain" aria-hidden="true"></div>
+<div id="progress" class="scroll-progress" aria-hidden="true"></div>
+
 <header class="topbar">
   <button id="menuBtn" class="icon-btn" aria-label="메뉴" title="메뉴">☰</button>
   <a class="brand" href="#/home">
-    <span class="brand-mark">🛠️</span>
-    <span class="brand-text">Claude Code 셋업 툴킷</span>
+    <span class="brand-mark">⌁</span>
+    <span class="brand-text">Claude Code <em>셋업 툴킷</em></span>
   </a>
   <div class="topbar-spacer"></div>
-  <input id="search" class="search" type="search" placeholder="문서 검색…" aria-label="문서 검색" autocomplete="off" />
-  <button id="themeBtn" class="icon-btn" aria-label="테마 전환" title="라이트/다크 전환">🌙</button>
-  <a class="icon-btn" href="https://github.com/Ihan0316/claude-code-toolkit" target="_blank" rel="noopener" title="GitHub 저장소" aria-label="GitHub">★</a>
+  <div class="search-wrap">
+    <span class="search-key">/</span>
+    <input id="search" class="search" type="search" placeholder="문서 검색" aria-label="문서 검색" autocomplete="off" />
+  </div>
+  <button id="themeBtn" class="icon-btn" aria-label="테마 전환" title="라이트/다크 전환">◐</button>
+  <a class="icon-btn gh" href="https://github.com/Ihan0316/claude-code-toolkit" target="_blank" rel="noopener" title="GitHub 저장소" aria-label="GitHub">
+    <svg viewBox="0 0 16 16" width="17" height="17" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+  </a>
 </header>
 
 <div class="layout">
@@ -37,12 +50,13 @@
   <div id="overlay" class="overlay" hidden></div>
 
   <main class="main">
+    <section id="hero" class="hero" hidden></section>
     <article id="content" class="content markdown-body">
-      <div class="loading">불러오는 중…</div>
+      <div class="loading"><span class="spin"></span> 불러오는 중…</div>
     </article>
     <nav id="pager" class="pager"></nav>
     <footer class="site-foot">
-      <span>Claude Code 실전 셋업 툴킷 · 문서 단일 소스: 저장소 <code>docs/</code></span>
+      <span class="mono">// 문서 단일 소스 = 저장소 docs/ · 웹은 그대로 렌더</span>
     </footer>
   </main>
 
