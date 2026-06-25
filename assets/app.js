@@ -134,6 +134,11 @@
       }
     });
 
+    // 1b) layout tables (README 3-card blocks) — class instead of :has() for old browsers
+    root.querySelectorAll("table").forEach(function (t) {
+      if (t.querySelector("td[width]")) t.classList.add("layout-cards");
+    });
+
     // 2) mermaid blocks → div.mermaid (before code-window wrapping)
     root.querySelectorAll("pre code.language-mermaid").forEach(function (code) {
       var div = document.createElement("div");
@@ -233,6 +238,7 @@
       buildTOC(toc);
       buildPager(idx);
       document.title = (isHome ? "" : item.title + " · ") + "Claude Code 셋업 툴킷";
+      updateMeta(item, isHome);
       // re-trigger enter animation
       contentEl.classList.remove("enter"); void contentEl.offsetWidth; contentEl.classList.add("enter");
       getMermaid().then(function (mm) {
@@ -326,6 +332,30 @@
     var dark = currentTheme() === "dark";
     document.getElementById("hljs-theme").href =
       "https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11.9.0/styles/github-" + (dark ? "dark" : "") + ".min.css";
+  }
+
+  /* ---- per-route meta (SEO; helps JS-rendering crawlers) ---- */
+  function setMeta(sel, attr, key, val) {
+    var el = document.head.querySelector(sel);
+    if (!el) { el = document.createElement("meta"); el.setAttribute(attr, key); document.head.appendChild(el); }
+    el.setAttribute("content", val);
+  }
+  function updateMeta(item, isHome) {
+    var title = (isHome ? "Claude Code 실전 셋업 툴킷" : item.title + " · Claude Code 셋업 툴킷");
+    var desc;
+    if (isHome) {
+      desc = "실무에서 매일 쓰며 다듬은 Claude Code 설정·훅·스킬·자동화 모음 — 무엇을/왜 썼고/무엇이 좋아졌는지.";
+    } else {
+      var p = contentEl.querySelector("p");
+      desc = (p ? p.textContent : item.title).replace(/\s+/g, " ").trim().slice(0, 155);
+    }
+    setMeta('meta[name="description"]', "name", "description", desc);
+    setMeta('meta[property="og:title"]', "property", "og:title", title);
+    setMeta('meta[property="og:description"]', "property", "og:description", desc);
+    setMeta('meta[property="og:url"]', "property", "og:url", location.href);
+    var canon = document.head.querySelector('link[rel="canonical"]');
+    if (!canon) { canon = document.createElement("link"); canon.setAttribute("rel", "canonical"); document.head.appendChild(canon); }
+    canon.setAttribute("href", location.origin + location.pathname + (isHome ? "" : location.hash));
   }
 
   /* ---- mobile menu ---- */

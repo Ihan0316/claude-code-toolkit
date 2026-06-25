@@ -398,22 +398,22 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 @media (max-width: 560px) { .search-wrap { display: none; } }
 
 /* ===== Layout tables (README 3-card blocks) → render as cards, not data tables ===== */
-.markdown-body table:has(td[width]) {
+.markdown-body table.layout-cards {
   display: table; width: 100%; border: none; background: none;
   border-collapse: separate; border-spacing: 14px; margin: 18px -14px;
 }
-.markdown-body table:has(td[width]) thead { display: none; }
-.markdown-body table:has(td[width]) td {
+.markdown-body table.layout-cards thead { display: none; }
+.markdown-body table.layout-cards td {
   border: 1px solid var(--border); border-radius: var(--radius);
   background: var(--surface); padding: 18px 20px; vertical-align: top;
   transition: border-color .15s, transform .15s;
 }
-.markdown-body table:has(td[width]) td:hover { border-color: var(--border-strong); }
-.markdown-body table:has(td[width]) tbody tr:hover td { background: var(--surface); }
-.markdown-body table:has(td[width]) h3 { margin-top: 4px; }
+.markdown-body table.layout-cards td:hover { border-color: var(--border-strong); }
+.markdown-body table.layout-cards tbody tr:hover td { background: var(--surface); }
+.markdown-body table.layout-cards h3 { margin-top: 4px; }
 @media (max-width: 760px) {
-  .markdown-body table:has(td[width]), .markdown-body table:has(td[width]) tbody,
-  .markdown-body table:has(td[width]) tr, .markdown-body table:has(td[width]) td { display: block; width: auto !important; }
+  .markdown-body table.layout-cards, .markdown-body table.layout-cards tbody,
+  .markdown-body table.layout-cards tr, .markdown-body table.layout-cards td { display: block; width: auto !important; }
 }
 
 /* ===== Focus accessibility ===== */
