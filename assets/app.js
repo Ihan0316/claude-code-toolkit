@@ -62,6 +62,9 @@
   var overlay = document.getElementById("overlay");
   var cache = {};
   var mermaidReady = null;
+  var CAN_TILT = !!(window.matchMedia &&
+    window.matchMedia("(hover: hover) and (pointer: fine)").matches &&
+    !window.matchMedia("(prefers-reduced-motion: reduce)").matches);
 
   function slugify(text) {
     // GitHub 호환: 공백을 개별 하이픈으로(붕괴 금지) — '—'·'&'·'/' 제거 후 남는 이중 공백이 이중 하이픈이 됨
@@ -250,6 +253,7 @@
       else { window.scrollTo(0, 0); }
       setupScrollSpy(toc);
       updateProgress();
+      setupTilt(isHome);
     }).catch(function (err) {
       heroEl.hidden = true;
       contentEl.innerHTML = '<div class="callout callout-caution"><div class="callout-title"><span class="ico">⛔</span><span>불러오기 실패</span></div><p>' +
@@ -356,6 +360,39 @@
     var canon = document.head.querySelector('link[rel="canonical"]');
     if (!canon) { canon = document.createElement("link"); canon.setAttribute("rel", "canonical"); document.head.appendChild(canon); }
     canon.setAttribute("href", location.origin + location.pathname + (isHome ? "" : location.hash));
+  }
+
+  /* ---- subtle 3D tilt (presentation) ---- */
+  function addTilt(el, max) {
+    if (!el || el.__tilt) return; el.__tilt = true;
+    el.classList.add("tilt");
+    if (getComputedStyle(el).position === "static") el.style.position = "relative";
+    var glare = document.createElement("span"); glare.className = "tilt-glare"; el.appendChild(glare);
+    el.addEventListener("pointermove", function (e) {
+      var r = el.getBoundingClientRect();
+      var px = (e.clientX - r.left) / r.width - .5, py = (e.clientY - r.top) / r.height - .5;
+      el.style.transform = "perspective(680px) rotateX(" + (-py * max).toFixed(2) + "deg) rotateY(" + (px * max).toFixed(2) + "deg) translateZ(10px)";
+      glare.style.background = "radial-gradient(circle at " + ((px + .5) * 100).toFixed(1) + "% " + ((py + .5) * 100).toFixed(1) + "%, rgba(255,255,255,.16), transparent 55%)";
+    });
+    el.addEventListener("pointerleave", function () { el.style.transform = ""; glare.style.background = "none"; });
+  }
+  function heroParallax() {
+    var glow = heroEl.querySelector(".hero-glow"), title = heroEl.querySelector(".hero-title");
+    heroEl.addEventListener("pointermove", function (e) {
+      var r = heroEl.getBoundingClientRect();
+      var px = (e.clientX - r.left) / r.width - .5, py = (e.clientY - r.top) / r.height - .5;
+      if (glow) glow.style.transform = "translate(" + (px * 32).toFixed(1) + "px," + (py * 22).toFixed(1) + "px)";
+      if (title) title.style.transform = "perspective(900px) rotateX(" + (-py * 5).toFixed(2) + "deg) rotateY(" + (px * 6).toFixed(2) + "deg)";
+    });
+    heroEl.addEventListener("pointerleave", function () {
+      if (glow) glow.style.transform = ""; if (title) title.style.transform = "";
+    });
+  }
+  function setupTilt(isHome) {
+    if (!CAN_TILT) return;
+    if (isHome) { heroEl.querySelectorAll(".stat").forEach(function (e) { addTilt(e, 9); }); heroParallax(); }
+    contentEl.querySelectorAll("table.layout-cards td").forEach(function (e) { addTilt(e, 7); });
+    pagerEl.querySelectorAll("a").forEach(function (e) { addTilt(e, 5); });
   }
 
   /* ---- mobile menu ---- */

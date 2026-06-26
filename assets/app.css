@@ -211,7 +211,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 .content.enter > *:nth-child(4){animation-delay:.14s}
 .content.enter > *:nth-child(5){animation-delay:.18s}
 .content.enter > *:nth-child(n+6){animation-delay:.20s}
-@keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes rise { from { opacity: 0; transform: perspective(1100px) rotateX(8deg) translateY(16px); transform-origin: 50% 0; } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .content.enter > * { animation: none; } html { scroll-behavior: auto; } }
 
 /* ===== TOC ===== */
@@ -397,25 +397,33 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 @media (min-width: 901px) { .overlay { display: none !important; } }
 @media (max-width: 560px) { .search-wrap { display: none; } }
 
-/* ===== Layout tables (README 3-card blocks) → render as cards, not data tables ===== */
-.markdown-body table.layout-cards {
-  display: table; width: 100%; border: none; background: none;
-  border-collapse: separate; border-spacing: 14px; margin: 18px -14px;
-}
+/* ===== Layout tables (README 3-card blocks) → flex cards (td as block = transformable) ===== */
+.markdown-body table.layout-cards, .markdown-body table.layout-cards tbody { display: block; border: none; background: none; }
 .markdown-body table.layout-cards thead { display: none; }
+.markdown-body table.layout-cards tr { display: flex; gap: 16px; margin: 18px 0; }
 .markdown-body table.layout-cards td {
+  display: block; flex: 1; overflow: hidden;
   border: 1px solid var(--border); border-radius: var(--radius);
-  background: var(--surface); padding: 18px 20px; vertical-align: top;
-  transition: border-color .15s, transform .15s;
+  background: var(--surface); padding: 18px 20px;
+  transition: border-color .18s, box-shadow .18s, transform .18s cubic-bezier(.2,.7,.2,1);
 }
 .markdown-body table.layout-cards td:hover { border-color: var(--border-strong); }
-.markdown-body table.layout-cards tbody tr:hover td { background: var(--surface); }
 .markdown-body table.layout-cards h3 { margin-top: 4px; }
-@media (max-width: 760px) {
-  .markdown-body table.layout-cards, .markdown-body table.layout-cards tbody,
-  .markdown-body table.layout-cards tr, .markdown-body table.layout-cards td { display: block; width: auto !important; }
-}
+@media (max-width: 760px) { .markdown-body table.layout-cards tr { flex-direction: column; } }
 
 /* ===== Focus accessibility ===== */
 :focus-visible { outline: 2px solid var(--violet); outline-offset: 2px; border-radius: 5px; }
 .nav a:focus-visible, .pager a:focus-visible { outline-offset: -2px; }
+
+/* ===== Subtle 3D (presentation eye-catch) ===== */
+.content { perspective: 1300px; }
+.tilt { transform-style: preserve-3d; transition: transform .2s cubic-bezier(.2,.7,.2,1), box-shadow .2s; will-change: transform; }
+.tilt:hover { box-shadow: 0 22px 50px -24px rgba(0,0,0,.6), 0 0 0 1px color-mix(in srgb, var(--violet) 30%, transparent); }
+.tilt-glare { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; mix-blend-mode: screen; background: none; }
+.hero-stats .stat { position: relative; overflow: hidden; }
+.pager a { position: relative; overflow: hidden; }
+.hero-glow { transition: transform .25s ease-out; }
+.hero-title { transition: transform .25s ease-out; transform-style: preserve-3d; }
+.brand-mark { transition: transform .3s cubic-bezier(.2,.7,.2,1); }
+.brand:hover .brand-mark { transform: perspective(320px) rotateY(26deg) rotateX(-8deg) scale(1.06); }
+@media (hover: none) { .tilt { transform: none !important; } }
