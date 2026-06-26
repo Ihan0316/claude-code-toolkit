@@ -95,6 +95,46 @@ flowchart TB
 
 ---
 
+## 🔁 compact 후에도 ultra가 풀리는 문제 — 매 턴 재주입 훅
+
+긴 세션에서 컨텍스트가 차면 `/compact`(또는 자동 compact)로 대화를 요약해 공간을 확보합니다. 그런데 이때 **`ultra`가 슬그머니 `full`·`lite` 수준으로 약해지는** 현상이 생깁니다.
+
+**원인**: caveman 플러그인은 강한 전체 룰셋을 **`SessionStart` 훅에서 한 번** 주입합니다. 이 텍스트는 결국 "대화 내용"의 일부이므로, compact가 대화를 요약할 때 **함께 잘려 나갑니다.** compact 직후 남는 caveman 신호는 매 입력마다 붙는 **약한 한 줄짜리 리마인더**뿐이라, 강한 압축을 지시하던 앵커가 사라지고 응답이 점점 길어집니다.
+
+```mermaid
+flowchart LR
+    A["ultra 활성<br/>(강한 룰셋 주입)"] --> B["긴 세션 →<br/>컨텍스트 가득"]
+    B --> C["/compact<br/>대화 요약"]
+    C --> D["강한 룰셋이<br/>요약돼 소실"]
+    D --> E["약한 한 줄만 남음<br/>→ full·lite로 드리프트"]
+    E -. "매 턴 재주입 훅" .-> F["강한 ultra 룰셋<br/>매 턴 다시 주입"]
+    F --> G["compact 직후<br/>첫 메시지부터 ultra 유지"]
+
+    classDef bad fill:#f8d7da,stroke:#dc3545,color:#58151c;
+    classDef good fill:#d1e7dd,stroke:#198754,color:#0a3622;
+    class D,E bad;
+    class F,G good;
+```
+
+**해결**: `SessionStart`(세션당 1회) 대신 **`UserPromptSubmit`(매 입력)** 에 강한 `ultra` 룰셋을 재주입하는 훅을 둡니다. 매 턴 도므로 **compact 직후 첫 메시지부터** 다시 앵커가 박히고, 세션 중간에 서서히 풀리는 드리프트까지 함께 잡힙니다. CC 버전이 compact 시 `SessionStart`를 다시 호출하는지 여부와 무관하게 동작하는 것도 장점입니다.
+
+> [!IMPORTANT]
+> 이 훅은 플러그인이 기록하는 **flag 파일(`<홈>/.claude/.caveman-active`)** 을 읽어 **현재 모드가 정확히 `ultra`일 때만** 룰셋을 내보냅니다. `lite`·`full`이거나 `"stop caveman"`으로 해제(flag 삭제)된 상태면 아무것도 출력하지 않으므로, 다른 레벨·해제 동작을 방해하지 않습니다.
+
+**장점**:
+- compact 후에도 `ultra` 강도가 유지됨 → `/caveman ultra`를 매번 다시 칠 필요 없음
+- 세션 중간 드리프트(긴 대화에서 점점 길어지는 현상)도 함께 억제
+- flag 게이팅으로 `off`/`lite`/`full`은 그대로 — 부작용 없음
+- 플러그인 소스가 아니라 **사용자 훅**이라 플러그인 업데이트에도 살아남음
+
+**주의**:
+- 매 턴 ~100토큰의 룰셋이 주입됩니다(프롬프트 캐시로 비용은 작음). `ultra`가 응답마다 아끼는 양이 더 크므로 순이득이지만, 토큰을 극한까지 아껴야 하는 상황이라면 인지해 둘 값입니다.
+- caveman을 안 쓰는 환경에는 불필요합니다. flag가 `ultra`가 아니면 즉시 빠져나가므로(거의 무비용) 켜 두어도 무방하지만, 필요 없으면 등록하지 않으면 됩니다.
+
+→ [examples/hooks/caveman-reinforce-ultra.js](../examples/hooks/caveman-reinforce-ultra.js) · 등록 방법은 [01. 훅 — 훅 6](01-hooks.md) 참고
+
+---
+
 ## 💡 왜 사용하나
 
 - **비용·속도** — 긴 세션에서 출력 토큰이 누적되면 비용과 응답 지연이 함께 커집니다. 군더더기를 줄이면 같은 정보를 더 빠르고 저렴하게 전달할 수 있습니다.

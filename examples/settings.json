@@ -58,6 +58,12 @@
             "type": "command",
             "command": "python \"<HOOKS_DIR>\\improve-prompt.py\"",
             "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "node \"<HOOKS_DIR>\\caveman-reinforce-ultra.js\"",
+            "timeout": 5,
+            "statusMessage": "caveman ultra 재주입..."
           }
         ]
       }

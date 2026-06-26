@@ -67,7 +67,7 @@ flowchart TB
 
 | 영역 | 무엇 | 핵심 이득 | 문서 |
 |---|---|---|---|
-| 🪝 **훅** | 세션·도구 실행 전후에 끼어드는 자동 스크립트 5종 | 위험 명령 차단, 한글 깨짐 자동 교정, 세션 맥락 자동 주입 | [01-hooks](docs/01-hooks.md) |
+| 🪝 **훅** | 세션·도구 실행 전후에 끼어드는 자동 스크립트 6종 | 위험 명령 차단, 한글 깨짐 자동 교정, 세션 맥락 주입, caveman `ultra` compact 후 유지 | [01-hooks](docs/01-hooks.md) |
 | 🧩 **스킬** | 작업별 전문 절차를 캡슐화한 모듈 (직접 13종 + 번들) | "PPT 만들어줘" 한마디로 검증된 절차 적용 | [02-skills](docs/02-skills.md) |
 | 🧠 **메모리** | 파일 기반 영속 기억 시스템 | 세션이 바뀌어도 취향·결정·맥락 유지 | [03-memory](docs/03-memory.md) |
 | ⏰ **자동 루틴** | 정해진 시간에 도는 보고/정리 작업 | 일간·주간 보고 자동, 메모리 자동 정리 | [04-automation](docs/04-automation.md) |
@@ -142,7 +142,7 @@ claude-code-toolkit/
 ├── README.md                 # 이 파일 — 전체 지도
 ├── docs/                     # 영역별 상세 문서 (왜 / 무엇 / 장점)
 │   ├── 00-quickstart.md      #  ↳ 10분 빠른 시작
-│   ├── 01-hooks.md           #  ↳ 훅 5종 — 안전장치
+│   ├── 01-hooks.md           #  ↳ 훅 6종 — 안전장치
 │   ├── 02-skills.md          #  ↳ 스킬 — 작업 절차 캡슐화
 │   ├── 03-memory.md          #  ↳ 영속 메모리 시스템
 │   ├── 04-automation.md      #  ↳ 자동 보고·정리 루틴
@@ -157,7 +157,7 @@ claude-code-toolkit/
     ├── settings.json         # 훅·플러그인·상태줄 등록 예시
     ├── CLAUDE.md.example     # 글로벌 지침 템플릿
     ├── backup-claude-settings.ps1 # 주간 백업 스크립트
-    ├── hooks/                # 훅 스크립트 5종
+    ├── hooks/                # 훅 스크립트 6종
     └── scheduled-tasks/      # 자동 루틴 정의 예시
 ```
 

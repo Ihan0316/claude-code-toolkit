@@ -61,6 +61,7 @@ flowchart TB
 | `guard-dangerous-bash.ps1` | ✅ 담김 | [examples/hooks/](../examples/hooks/guard-dangerous-bash.ps1) |
 | `ensure-utf8-bom.ps1` | ✅ 담김 | [examples/hooks/](../examples/hooks/ensure-utf8-bom.ps1) |
 | `session-context.ps1` | ✅ 담김 | [examples/hooks/](../examples/hooks/session-context.ps1) |
+| `caveman-reinforce-ultra.js` | ✅ 담김 | [examples/hooks/](../examples/hooks/caveman-reinforce-ultra.js) (Node, caveman `ultra` 유지) |
 | `backup-claude-settings.ps1` | ✅ 담김 | [examples/](../examples/backup-claude-settings.ps1) |
 
 > [!NOTE]
