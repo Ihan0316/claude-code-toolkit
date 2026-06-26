@@ -74,11 +74,9 @@ body {
 }
 ::selection { background: color-mix(in srgb, var(--violet) 40%, transparent); color: #fff; }
 
-/* scrollbars */
-* { scrollbar-width: thin; scrollbar-color: var(--border-strong) transparent; }
-*::-webkit-scrollbar { width: 10px; height: 10px; }
-*::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 8px; border: 3px solid transparent; background-clip: content-box; }
-*::-webkit-scrollbar-thumb:hover { background: var(--text-faint); background-clip: content-box; }
+/* scrollbars — hidden everywhere, scrolling still works */
+* { scrollbar-width: none; -ms-overflow-style: none; }
+*::-webkit-scrollbar { width: 0; height: 0; display: none; }
 
 a { color: var(--indigo); text-decoration: none; }
 [data-theme="dark"] a { color: #a7b2ff; }
