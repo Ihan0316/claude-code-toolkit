@@ -74,6 +74,7 @@ flowchart TB
     E --> E1["skill-creator / mcp-builder"]
     E --> E2["prompt-improver / recursive-research"]
     E --> E3["docx / pdf / xlsx / schedule"]
+    E --> E4["karpathy-guidelines (행동 가드레일)"]
 ```
 
 ---
@@ -97,6 +98,7 @@ flowchart TB
 | 🔌 `mcp-builder` | MCP 서버 제작 가이드 | 외부 API를 Claude 도구로 |
 | ✍️ `prompt-improver` | 모호한 프롬프트를 리서치·질문으로 보강 | 훅과 연동해 되묻기 |
 | 🔬 `recursive-research` | 자기조절 재귀 심층 리서치 | 도메인 깊이 탐구 |
+| 🧭 `karpathy-guidelines` | LLM 코딩 실수 차단 4대 가드레일(과설계·범위이탈·침묵추측·미검증 완료) | 자율 코드 작업의 품질 안전망 |
 
 > [!NOTE]
 > 컴퓨터 비전 배경 + 프런트엔드 보고 산출물이라는 작업 조합이라, **CV 학습(pytorch / cv) + 보고 산출물(pptx / frontend / theme) 양쪽**을 함께 설치했습니다. 자신의 주력 작업 두세 갈래를 먼저 정하고, 그 갈래에 해당하는 스킬부터 까는 게 시행착오를 줄입니다.
@@ -210,7 +212,9 @@ description: <언제 이 스킬을 써야 하는지 — 구체적 트리거 문�
 - ⚠️ **너무 넓게 잡지 않기**: 한 스킬이 모든 걸 하려 들면 트리거가 광범위해져 오발동합니다. 한 스킬은 한 가지 일을 잘하게 좁히는 편이 안전합니다.
 
 > [!NOTE]
-> **출처**: 스킬은 [ComposioHQ/awesome-claude-skills](https://github.com/ComposioHQ/awesome-claude-skills) 같은 모음을 1차 소스로 참고해 `~/.claude/skills/`에 설치하면 됩니다. 모음에서 가져온 스킬도 `description`은 자신의 작업 어휘에 맞게 다듬어 두는 게 자동 선택 정확도에 유리합니다.
+> **출처**: 스킬은 [ComposioHQ/awesome-claude-skills](https://github.com/ComposioHQ/awesome-claude-skills) · [travisvn/awesome-claude-skills](https://github.com/travisvn/awesome-claude-skills) · [VoltAgent/awesome-agent-skills](https://github.com/VoltAgent/awesome-agent-skills) 같은 모음을 1차 소스로 참고해 `~/.claude/skills/`에 설치하면 됩니다. 모음에서 가져온 스킬도 `description`은 자신의 작업 어휘에 맞게 다듬어 두는 게 자동 선택 정확도에 유리합니다.
+>
+> `karpathy-guidelines`는 [multica-ai/andrej-karpathy-skills](https://github.com/multica-ai/andrej-karpathy-skills)(MIT)의 4대 행동 가드레일을 한국어·자율운영 환경에 맞춰 각색해 설치했습니다.
 
 ---
 

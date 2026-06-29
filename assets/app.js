@@ -47,7 +47,7 @@
     '<div class="hero-stats">' +
       '<div class="stat"><b>12</b><span>문서</span></div>' +
       '<div class="stat"><b>5</b><span>훅</span></div>' +
-      '<div class="stat"><b>13</b><span>스킬</span></div>' +
+      '<div class="stat"><b>14</b><span>스킬</span></div>' +
       '<div class="stat"><b>19</b><span>다이어그램</span></div>' +
       '<div class="stat"><b>0</b><span>비밀 유출</span></div>' +
     '</div>';
