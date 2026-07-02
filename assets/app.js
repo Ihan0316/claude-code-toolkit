@@ -110,6 +110,16 @@
     return mermaidReady;
   }
 
+  // On narrow screens mermaid fits diagrams to container width, shrinking text to ~30% (illegible).
+  // Force each svg to its natural width (mermaid stores it as inline max-width) so .mermaid scrolls horizontally instead.
+  function fitMermaidMobile() {
+    if (!window.matchMedia || !window.matchMedia("(max-width: 900px)").matches) return;
+    contentEl.querySelectorAll(".mermaid svg").forEach(function (svg) {
+      var natural = parseFloat(svg.style.maxWidth) || svg.getBBox && svg.getBBox().width;
+      if (natural) { svg.style.width = Math.ceil(natural) + "px"; svg.style.maxWidth = "none"; }
+    });
+  }
+
   /* ---- sidebar ---- */
   function buildNav() {
     var html = "";
@@ -247,7 +257,9 @@
       getMermaid().then(function (mm) {
         if (!mm) return;
         var nodes = contentEl.querySelectorAll(".mermaid");
-        if (nodes.length) { try { mm.run({ nodes: nodes }); } catch (e) {} }
+        if (!nodes.length) return;
+        try { Promise.resolve(mm.run({ nodes: nodes })).then(fitMermaidMobile, fitMermaidMobile); }
+        catch (e) { fitMermaidMobile(); }
       });
       if (anchor) { setTimeout(function () { var el = document.getElementById(anchor); if (el) el.scrollIntoView(); }, 70); }
       else { window.scrollTo(0, 0); }
