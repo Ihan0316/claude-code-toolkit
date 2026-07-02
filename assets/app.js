@@ -46,7 +46,7 @@
     '</div>' +
     '<div class="hero-stats">' +
       '<div class="stat"><b>12</b><span>문서</span></div>' +
-      '<div class="stat"><b>5</b><span>훅</span></div>' +
+      '<div class="stat"><b>6</b><span>훅</span></div>' +
       '<div class="stat"><b>14</b><span>스킬</span></div>' +
       '<div class="stat"><b>19</b><span>다이어그램</span></div>' +
       '<div class="stat"><b>0</b><span>비밀 유출</span></div>' +
@@ -172,10 +172,24 @@
       var btn = head.querySelector(".code-copy");
       btn.addEventListener("click", function () {
         var txt = code.textContent;
-        navigator.clipboard && navigator.clipboard.writeText(txt).then(function () {
+        function ok() {
           btn.textContent = "복사됨 ✓"; btn.classList.add("done");
           setTimeout(function () { btn.textContent = "복사"; btn.classList.remove("done"); }, 1300);
-        });
+        }
+        function fail() {
+          btn.textContent = "복사 실패";
+          setTimeout(function () { btn.textContent = "복사"; }, 1300);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(txt).then(ok).catch(fail);
+        } else {
+          // 비보안(http)·구형 브라우저 폴백
+          var ta = document.createElement("textarea");
+          ta.value = txt; ta.style.position = "fixed"; ta.style.opacity = "0";
+          document.body.appendChild(ta); ta.select();
+          try { document.execCommand("copy") ? ok() : fail(); } catch (e) { fail(); }
+          document.body.removeChild(ta);
+        }
       });
     });
 
@@ -254,14 +268,16 @@
       updateMeta(item, isHome);
       // re-trigger enter animation
       contentEl.classList.remove("enter"); void contentEl.offsetWidth; contentEl.classList.add("enter");
+      function scrollToAnchor() { var el = document.getElementById(anchor); if (el) el.scrollIntoView(); }
       getMermaid().then(function (mm) {
         if (!mm) return;
         var nodes = contentEl.querySelectorAll(".mermaid");
         if (!nodes.length) return;
-        try { Promise.resolve(mm.run({ nodes: nodes })).then(fitMermaidMobile, fitMermaidMobile); }
-        catch (e) { fitMermaidMobile(); }
+        // 다이어그램 렌더 후 문서 높이가 바뀌므로 앵커로 재스크롤 (70ms 초기 스크롤이 어긋남 보정)
+        try { Promise.resolve(mm.run({ nodes: nodes })).then(fitMermaidMobile, fitMermaidMobile).then(function () { if (anchor) scrollToAnchor(); }); }
+        catch (e) { fitMermaidMobile(); if (anchor) scrollToAnchor(); }
       });
-      if (anchor) { setTimeout(function () { var el = document.getElementById(anchor); if (el) el.scrollIntoView(); }, 70); }
+      if (anchor) { setTimeout(scrollToAnchor, 70); }
       else { window.scrollTo(0, 0); }
       setupScrollSpy(toc);
       updateProgress();
@@ -341,7 +357,8 @@
       mermaidReady = null;
       var r = parseRoute() || { id: "home" };
       var idx = Math.max(0, PAGES.findIndex(function (p) { return p.id === r.id; }));
-      renderDoc(PAGES[idx], idx, "");
+      var y = window.scrollY || document.documentElement.scrollTop || 0;
+      renderDoc(PAGES[idx], idx, "").then(function () { window.scrollTo(0, y); });   // 테마 전환 시 스크롤 위치 유지
     });
   }
   function syncThemeUI() {
@@ -417,10 +434,26 @@
     overlay.addEventListener("click", closeMenu);
   }
 
+  /* ---- responsive search: 좁은 화면(<=560px)에선 검색을 드로어(사이드바)로 이동해 접근 가능하게 ---- */
+  function setupResponsiveSearch() {
+    var wrap = document.querySelector(".search-wrap");
+    var topbar = document.querySelector(".topbar");
+    var themeBtn = document.getElementById("themeBtn");
+    if (!wrap || !topbar || !sidebar || !window.matchMedia) return;
+    var mq = window.matchMedia("(max-width: 560px)");
+    function place() {
+      if (mq.matches) { if (wrap.parentElement !== sidebar) sidebar.insertBefore(wrap, sidebar.firstChild); }
+      else { if (wrap.parentElement !== topbar) topbar.insertBefore(wrap, themeBtn); }
+    }
+    place();
+    if (mq.addEventListener) mq.addEventListener("change", place);
+    else if (mq.addListener) mq.addListener(place);
+  }
+
   /* ---- boot ---- */
   function boot() {
     window.marked.setOptions({ gfm: true, breaks: false });
-    buildNav(); setupSearch(); setupTheme(); setupMenu();
+    buildNav(); setupSearch(); setupTheme(); setupMenu(); setupResponsiveSearch();
     window.addEventListener("hashchange", function () { if ((location.hash || "").indexOf("#/") === 0) route(); });
     window.addEventListener("scroll", updateProgress, { passive: true });
     route();

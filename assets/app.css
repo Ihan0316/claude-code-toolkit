@@ -37,7 +37,7 @@
   --border-strong: rgba(124, 140, 184, .30);
   --text: #e9ecf5;
   --text-dim: #99a3bd;
-  --text-faint: #6b748f;
+  --text-faint: #7681a0;   /* WCAG AA: 4.5:1+ on --bg #0a0b10 */
   --code-bg: #0a0c13;
   --grid: rgba(124, 140, 184, .055);
   --glow: rgba(138, 43, 226, .22);
@@ -54,7 +54,7 @@
   --border-strong: rgba(40, 50, 90, .22);
   --text: #161b27;
   --text-dim: #515a72;
-  --text-faint: #818aa3;
+  --text-faint: #666e88;   /* WCAG AA: 4.6:1 on --bg #f7f8fc (기존 #818aa3=3.25:1 미달) */
   --code-bg: #f1f3fa;
   --grid: rgba(40, 50, 90, .05);
   --glow: rgba(138, 43, 226, .14);
@@ -398,7 +398,12 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   .mermaid svg { max-width: none; }
 }
 @media (min-width: 901px) { .overlay { display: none !important; } }
-@media (max-width: 560px) { .search-wrap { display: none; } }
+@media (max-width: 560px) {
+  .topbar .search-wrap { display: none; }                        /* 상단바 공간 부족 → 숨김 */
+  .sidebar .search-wrap { display: flex; margin: 0 6px 14px; }    /* JS가 드로어로 이동 → 노출 */
+  .sidebar .search { width: 100%; }
+  .sidebar .search-key { display: none; }
+}
 
 /* ===== Layout tables (README 3-card blocks) → flex cards (td as block = transformable) ===== */
 .markdown-body table.layout-cards, .markdown-body table.layout-cards tbody { display: block; border: none; background: none; }
