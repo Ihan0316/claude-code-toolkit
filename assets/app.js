@@ -152,6 +152,21 @@
       if (t.querySelector("td[width]")) t.classList.add("layout-cards");
     });
 
+    // 1c) wrap data tables in a horizontal-scroll container. Border/radius live on the
+    //     wrapper so the table stays a real `display:table` (fills width, no empty gap).
+    //     Most text tables compress to fit; only genuinely wide ones overflow and scroll.
+    //     When a table does overflow, the wrapper gets tabindex=0 so keyboard-only users
+    //     can scroll to the clipped columns (WCAG 2.1.1). Skip layout-cards.
+    root.querySelectorAll("table").forEach(function (t) {
+      if (t.classList.contains("layout-cards")) return;
+      if (t.parentElement && t.parentElement.classList.contains("table-wrap")) return;
+      var wrap = document.createElement("div");
+      wrap.className = "table-wrap";
+      t.parentNode.insertBefore(wrap, t);
+      wrap.appendChild(t);
+      if (t.scrollWidth > wrap.clientWidth + 1) wrap.tabIndex = 0;
+    });
+
     // 2) mermaid blocks → div.mermaid (before code-window wrapping)
     root.querySelectorAll("pre code.language-mermaid").forEach(function (code) {
       var div = document.createElement("div");

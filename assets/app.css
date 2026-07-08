@@ -334,12 +334,17 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 .markdown-body pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; overflow-x: auto; margin: 16px 0; }
 .markdown-body pre code { background: none; border: none; padding: 0; font-family: var(--font-mono); font-size: 13px; line-height: 1.65; }
 
-/* tables */
-.markdown-body table { border-collapse: separate; border-spacing: 0; width: 100%; margin: 18px 0; font-size: 14px; display: block; overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius); }
+/* tables — border/radius/scroll live on the wrapper; the table itself is a real
+   `display:table` so `width:100%` distributes columns to fill (a bare `display:block`
+   table shrinks to content, leaving an empty gap inside the full-width border). */
+.markdown-body .table-wrap { margin: 18px 0; overflow-x: auto; -webkit-overflow-scrolling: touch; border: 1px solid var(--border); border-radius: var(--radius); }
+.markdown-body .table-wrap[tabindex]:focus-visible { outline: 2px solid var(--violet); outline-offset: 2px; }
+.markdown-body table { border-collapse: separate; border-spacing: 0; width: 100%; font-size: 14px; }
+.markdown-body .table-wrap > table { margin: 0; }
 .markdown-body th, .markdown-body td { border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); padding: 10px 14px; text-align: left; vertical-align: top; word-break: keep-all; overflow-wrap: anywhere; }
 .markdown-body th:last-child, .markdown-body td:last-child { border-right: none; }
 .markdown-body tr:last-child td { border-bottom: none; }
-.markdown-body th { background: var(--surface); font-weight: 700; font-size: 13px; letter-spacing: .01em; position: sticky; top: 0; }
+.markdown-body th { background: var(--surface); font-weight: 700; font-size: 13px; letter-spacing: .01em; }
 .markdown-body tbody tr { transition: background .12s; }
 .markdown-body tbody tr:hover td { background: color-mix(in srgb, var(--violet) 6%, transparent); }
 
