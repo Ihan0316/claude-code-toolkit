@@ -116,6 +116,20 @@
     return mermaidReady;
   }
 
+  // mermaid 11 + htmlLabels:false는 라벨을 HTML-escape한 뒤 SVG <text>에 넣는다.
+  // 그래서 "A & B"가 화면에 "A &amp; B"로 보인다 (입력을 #38;/#amp;/&amp; 어느 표기로 줘도 동일).
+  // 렌더가 끝난 뒤 텍스트 노드에서 엔티티를 되돌린다 — 텍스트 노드라 마크업으로 해석될 여지가 없다.
+  var ENTITY = { "&amp;": "&", "&lt;": "<", "&gt;": ">", "&quot;": '"', "&#39;": "'", "&#38;": "&" };
+  function unescapeMermaidLabels() {
+    contentEl.querySelectorAll(".mermaid svg text, .mermaid svg tspan").forEach(function (t) {
+      if (t.childElementCount) return;             // 자식 tspan이 있으면 그쪽에서 처리
+      var s = t.textContent;
+      if (s.indexOf("&") < 0) return;
+      var next = s.replace(/&(amp|lt|gt|quot|#39|#38);/g, function (m) { return ENTITY[m]; });
+      if (next !== s) t.textContent = next;
+    });
+  }
+
   // On narrow screens mermaid fits diagrams to container width, shrinking text to ~30% (illegible).
   // Force each svg to its natural width (mermaid stores it as inline max-width) so .mermaid scrolls horizontally instead.
   function fitMermaidMobile() {
@@ -295,8 +309,14 @@
         var nodes = contentEl.querySelectorAll(".mermaid");
         if (!nodes.length) return;
         // 다이어그램 렌더 후 문서 높이가 바뀌므로 앵커로 재스크롤 (70ms 초기 스크롤이 어긋남 보정)
-        try { Promise.resolve(mm.run({ nodes: nodes })).then(fitMermaidMobile, fitMermaidMobile).then(function () { if (anchor) scrollToAnchor(); }); }
-        catch (e) { fitMermaidMobile(); if (anchor) scrollToAnchor(); }
+        // mermaid는 run() resolve 이후에도 라벨 tspan을 다시 만지므로 한 프레임 뒤 한 번 더 훑는다
+        function afterRender() {
+          unescapeMermaidLabels(); fitMermaidMobile();
+          requestAnimationFrame(unescapeMermaidLabels);
+          setTimeout(unescapeMermaidLabels, 200);
+        }
+        try { Promise.resolve(mm.run({ nodes: nodes })).then(afterRender, afterRender).then(function () { if (anchor) scrollToAnchor(); }); }
+        catch (e) { afterRender(); if (anchor) scrollToAnchor(); }
       });
       if (anchor) { setTimeout(scrollToAnchor, 70); }
       else { window.scrollTo(0, 0); }
