@@ -18,7 +18,8 @@
 
 | 항목 | 값 | 이유 |
 |---|---|---|
-| 🪝 `hooks` | 5종 등록 | 안전·맥락 자동화 ([01-hooks.md](01-hooks.md)) |
+| 🪝 `hooks` | 6종 등록 | 안전·맥락 자동화 ([01-hooks.md](01-hooks.md)) |
+| 🏪 `extraKnownMarketplaces` | caveman 마켓 등록 | 커스텀 플러그인 소스 ([10-plugins-marketplaces.md](10-plugins-marketplaces.md)) |
 | 📊 `statusLine` | caveman 상태줄 | 현재 모드/토큰 상태 표시 |
 | 🎨 `theme` | `dark` | 어두운 환경에서의 가독성 |
 | 🔄 `autoUpdatesChannel` | `latest` | 최신 기능·수정 사항 추적 |
@@ -54,8 +55,8 @@
   "theme": "dark",
   "autoUpdatesChannel": "latest",
 
-  // 플러그인
-  "enabledPlugins": ["caveman@caveman"],
+  // 플러그인 — "<플러그인>@<마켓플레이스>": true 객체 형식
+  "enabledPlugins": { "caveman@caveman": true },
 
   // 알림 / 원격
   "inputNeededNotifEnabled": true,
