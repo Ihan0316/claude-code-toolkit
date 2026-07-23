@@ -37,42 +37,46 @@
 
   /* ================= 랜딩 페이지 데이터 ================= */
   var L = {
-    kicker: "~/.claude · DEV SETUP TOOLKIT",
-    titleTop: "Claude Code를",
-    titleAccent: "손에 맞게 길들이기",
-    sub: '6개월 인턴 실무에서 매일 쓰며 다듬은 훅 · 스킬 · 메모리 · 자동화 모음. ' +
-         '단순 "이렇게 하세요"가 아니라 — <b>무엇을 / 왜 썼고 / 무엇이 좋아졌는지</b>까지.',
+    kicker: "~/.claude · dev setup toolkit",
+    // 단어 단위 스태거 — 마지막 어절이 하이라이트
+    titleWords: ['Claude', 'Code를', '<span class="hl">손에 맞게</span>', '길들이기'],
+    sub: '6개월 실무에서 매일 쓰며 다듬은 훅 · 스킬 · 메모리 · 자동화. ' +
+         '단순 "이렇게 하세요"가 아니라 <b>무엇을 / 왜 썼고 / 무엇이 좋아졌는지</b>까지 적었습니다.',
     stats: [
-      { n: 12, s: "문서" }, { n: 6, s: "훅" }, { n: 14, s: "스킬" },
-      { n: 19, s: "다이어그램" }, { n: 0, s: "비밀 유출" }
+      { n: 12, s: "docs" }, { n: 6, s: "hooks" }, { n: 14, s: "skills" }, { n: 0, s: "secrets" }
     ],
-    principles: [
-      { n: "01", t: "실수는 시스템이 막는다",
-        d: "사람의 주의력에 기대지 않습니다. 위험한 삭제·강제 푸시는 훅이 자동 차단, 한글 인코딩 깨짐은 저장 시 자동 교정." },
-      { n: "02", t: "맥락은 기억하게 만든다",
-        d: '매번 "나는 이런 사람이고 이 프로젝트는…"을 다시 설명하지 않도록 메모리·CLAUDE.md·세션 훅으로 자동 주입.' },
-      { n: "03", t: "반복은 자동화한다",
-        d: "일간/주간 보고, 메모리 정리, 설정 백업을 OS 스케줄러에 위임. 안 하면 서서히 망가지는 일을 시스템에." }
+    termTitle: "claude — 세션 데모",
+    // 라이브 터미널 대본: cmd는 타이핑, 나머지는 순차 출력
+    term: [
+      { t: "cmd",   s: 'claude "작업 정리해서 원격에 올려줘"' },
+      { t: "run",   s: "Bash(git push --force origin main)" },
+      { t: "block", s: "PreToolUse 훅 — 위험 명령 차단 (exit 2)" },
+      { t: "ok",    s: "안전한 push로 재시도 → 완료" },
+      { t: "cmd",   s: 'claude "일일 보고 만들어줘"' },
+      { t: "run",   s: "Skill(daily-report) 로드" },
+      { t: "ok",    s: "보고서 생성 완료 · 2.1s" }
     ],
-    features: [
-      { k: "훅", t: "위험 명령을 실행 전에 끊는다", id: "01-hooks",
+    marquee: ["PreToolUse", "SessionStart", "UTF-8 BOM", "Memory", "Skills", "MCP", "CLAUDE.md", "Scheduler", "Backup", "caveman", "statusLine", "Sync"],
+    flow: [
+      { g: "$", t: "지시한다", d: "평소처럼 자연어로 시킵니다. 셋업은 뒤에서 조용히 동작합니다." },
+      { g: "⚡", t: "훅이 끼어든다", d: "도구 실행 직전·직후를 가로채 위험을 차단하고 맥락을 주입합니다." },
+      { g: "✓", t: "안전하게 끝난다", d: "결과만 받습니다. 실수는 시스템이 이미 걸러냈습니다." }
+    ],
+    bento: [
+      { k: "Hooks", t: "위험 명령은 실행 전에 끊는다", id: "01-hooks", w2: true,
         d: "세션·도구 실행 전후에 끼어드는 자동 스크립트 6종. LLM 판단이 아니라 OS 수준에서 결정론적으로 동작합니다.",
-        tags: ["PreToolUse", "SessionStart", "UTF-8 BOM"] },
-      { k: "스킬", t: "검증된 절차를 한마디로", id: "02-skills",
-        d: '작업별 전문 절차를 캡슐화한 모듈 14종. "PPT 만들어줘" 한마디에 매번 같은 품질의 절차가 적용됩니다.',
-        tags: ["pptx", "prompt-improver", "번들"] },
-      { k: "메모리", t: "세션이 바뀌어도 잊지 않는다", id: "03-memory",
-        d: "파일 기반 영속 기억. 취향·결정·프로젝트 맥락을 한 파일 한 사실로 쌓고 인덱스로 회수합니다.",
-        tags: ["user", "feedback", "project"] },
-      { k: "자동 루틴", t: "보고서가 알아서 쌓인다", id: "04-automation",
-        d: "일간·주간 보고와 메모리 정리를 OS 스케줄러에 위임. 잊어버려도 기록은 남습니다.",
-        tags: ["daily", "weekly", "백업"] },
-      { k: "MCP", t: "외부 시스템을 직접 조작", id: "05-mcp",
-        d: "노션·브라우저·문서검색을 Claude가 직접 다룹니다. 복붙 왕복이 사라집니다.",
-        tags: ["Notion", "Browser", "Docs"] },
-      { k: "동기화·백업", t: "어느 컴퓨터에서도 같은 환경", id: "08-sync-infra",
-        d: "회사 Windows ↔ 집 Mac 설정 일치. 주간 자동 백업으로 설정 유실을 막습니다.",
-        tags: ["Windows", "macOS", "주간 백업"] }
+        mini: '<span class="tk-k">"PreToolUse"</span><span class="tk-p">: [{ </span><span class="tk-k">"matcher"</span><span class="tk-p">:</span> <span class="tk-s">"Bash|PowerShell"</span><span class="tk-p">, ... }]</span>  <span class="tk-c">// 전 세션 적용</span>' },
+      { k: "Memory", t: "세션을 넘는 기억", id: "03-memory",
+        d: "한 파일 한 사실. 인덱스로 회수합니다.",
+        tree: 'memory/\n├─ <b>MEMORY.md</b>        <i>← 인덱스</i>\n├─ user_profile.md\n└─ feedback_*.md' },
+      { k: "Skills", t: "검증된 절차를 한마디로", id: "02-skills",
+        d: '작업별 절차를 캡슐화한 모듈 14종. "PPT 만들어줘" 한마디면 충분합니다.' },
+      { k: "MCP", t: "외부 시스템 직접 조작", id: "05-mcp",
+        d: "노션·브라우저·문서검색을 Claude가 직접 다룹니다. 복붙 왕복이 사라집니다." },
+      { k: "Automation", t: "보고서가 알아서 쌓인다", id: "04-automation",
+        d: "일간·주간 보고와 백업을 OS 스케줄러에 위임합니다." },
+      { k: "Sync", t: "회사 Windows ↔ 집 Mac, 같은 환경", id: "08-sync-infra", strip: true,
+        d: "설정을 저장소로 동기화하고 주간 백업으로 유실을 막습니다." }
     ],
     steps: [
       { n: 1, t: "CLAUDE.md 글로벌 지침", e: 3, lv: "쉬움", id: "00-quickstart" },
@@ -82,23 +86,15 @@
       { n: 5, t: "세션 컨텍스트 훅", e: 2, lv: "중간", id: "01-hooks" },
       { n: 6, t: "스킬 설치", e: 2, lv: "쉬움", id: "02-skills" }
     ],
-    codeTitle: "settings.json",
-    codeCap: "훅 하나를 걸면, 이후 모든 세션에서 위험 명령이 실행 전에 멈춥니다.",
-    code:
-      '{\n' +
-      '  "hooks": {\n' +
-      '    "PreToolUse": [\n' +
-      '      {\n' +
-      '        "matcher": "Bash|PowerShell",\n' +
-      '        "hooks": [{\n' +
-      '          "type": "command",\n' +
-      '          "command": "powershell -File <훅경로>\\\\guard-dangerous-bash.ps1",\n' +
-      '          "timeout": 5\n' +
-      '        }]\n' +
-      '      }\n' +
-      '    ]\n' +
-      '  }\n' +
-      '}'
+    dots: [
+      { id: "lp-a-hero", label: "시작" },
+      { id: "lp-a-flow", label: "동작 방식" },
+      { id: "lp-a-bento", label: "구성" },
+      { id: "lp-a-steps", label: "도입 순서" },
+      { id: "lp-a-cta", label: "시작하기" }
+    ],
+    bandTitle: "10분이면 핵심 3개가 켜집니다",
+    bandSub: "설치 순서, 각 항목이 무엇을 막아 주는지, 실패했을 때 무엇을 보면 되는지까지 문서에 있습니다."
   };
 
   function esc(s) { return escapeHtml(s); }
@@ -106,74 +102,83 @@
   function landingHTML() {
     var h = "";
 
-    h += '<section class="lp-hero">' +
-      '<div class="lp-kicker">' + esc(L.kicker) + '</div>' +
-      '<h1 class="lp-title">' + esc(L.titleTop) + '<br><span class="grad">' + esc(L.titleAccent) + '</span></h1>' +
-      '<p class="lp-sub">' + L.sub + '</p>' +
-      '<div class="lp-cta">' +
-        '<a class="btn btn-primary" href="#/00-quickstart">10분 만에 시작</a>' +
-        '<a class="btn btn-ghost" href="https://github.com/' + REPO + '" target="_blank" rel="noopener">GitHub 저장소</a>' +
+    /* hero — 좌: 카피 / 우: 라이브 터미널 */
+    h += '<section class="lp-hero" id="lp-a-hero">' +
+      '<div class="lp-hero-copy">' +
+        '<div class="lp-kicker"><span class="pulse"></span>' + esc(L.kicker) + '</div>' +
+        '<h1 class="lp-title">' +
+          L.titleWords.map(function (w, i) {
+            return '<span class="w" style="animation-delay:' + (.12 + i * .09).toFixed(2) + 's">' + w + '</span>';
+          }).join(" ") +
+        '</h1>' +
+        '<p class="lp-sub">' + L.sub + '</p>' +
+        '<div class="lp-cta">' +
+          '<a class="btn btn-primary magnet" href="#/00-quickstart">10분 만에 시작</a>' +
+          '<a class="btn btn-ghost magnet" href="https://github.com/' + REPO + '" target="_blank" rel="noopener">GitHub</a>' +
+        '</div>' +
+        '<div class="lp-stats">' +
+          L.stats.map(function (s) {
+            return '<div class="lp-stat"><b data-count="' + s.n + '">0</b><span>' + esc(s.s) + '</span></div>';
+          }).join("") +
+        '</div>' +
       '</div>' +
-      '<div class="lp-stats">' +
-        L.stats.map(function (s) {
-          return '<div class="lp-stat"><b data-count="' + s.n + '">0</b><span>' + esc(s.s) + '</span></div>';
+      '<div class="lp-term" aria-label="터미널 데모">' +
+        '<div class="lp-term-head"><span class="dots"><i></i><i></i><i></i></span><span>' + esc(L.termTitle) + '</span></div>' +
+        '<div class="lp-term-body" id="lpTerm"></div>' +
+      '</div>' +
+    '</section>';
+
+    /* marquee */
+    var mq = L.marquee.map(function (w) { return esc(w) + ' <i>▸</i>'; }).join(" ");
+    h += '<div class="lp-marquee" aria-hidden="true"><div class="track"><span>' + mq + '</span><span>' + mq + '</span></div></div>';
+
+    /* how it works */
+    h += '<section class="lp-sec reveal lp-flow-wrap" id="lp-a-flow">' +
+      '<span class="ghost" aria-hidden="true">01</span>' +
+      '<div class="lp-eyebrow">How it works</div>' +
+      '<h2 class="lp-h2">쓰던 대로 쓰면, <span class="hl">나머지는 시스템이</span></h2>' +
+      '<p class="lp-lead">명령을 바꿀 필요가 없습니다. 훅과 메모리가 매 턴 사이에서 조용히 일합니다.</p>' +
+      '<div class="lp-flow">' +
+        L.flow.map(function (n) {
+          return '<div class="lp-node"><span class="bead">' + n.g + '</span>' +
+                 '<h3>' + esc(n.t) + '</h3><p>' + esc(n.d) + '</p></div>';
         }).join("") +
       '</div>' +
-      '<div class="lp-scroll" aria-hidden="true"><span></span></div>' +
     '</section>';
 
-    h += '<section class="lp-sec reveal">' +
-      '<div class="lp-eyebrow">설계 원칙</div>' +
-      '<h2 class="lp-h2">왜 이렇게 짰나</h2>' +
-      '<p class="lp-lead">Claude Code는 기본만 써도 강력하지만, 반복 업무 · 실수 방지 · 맥락 유지는 직접 손봐야 합니다.</p>' +
-      '<div class="lp-principles">' +
-        L.principles.map(function (p) {
-          return '<div class="lp-principle"><span class="lp-num">' + p.n + '</span>' +
-                 '<h3>' + esc(p.t) + '</h3><p>' + esc(p.d) + '</p></div>';
+    /* bento */
+    h += '<section class="lp-sec reveal" id="lp-a-bento">' +
+      '<span class="ghost" aria-hidden="true">02</span>' +
+      '<div class="lp-eyebrow">The system</div>' +
+      '<h2 class="lp-h2">여섯 개의 <span class="hl">축</span></h2>' +
+      '<p class="lp-lead">훅이 안전을, 스킬·메모리·MCP가 능력과 기억을, 루틴·동기화가 반복과 보존을 맡습니다.</p>' +
+      '<div class="lp-bento">' +
+        L.bento.map(function (c) {
+          var cls = "lp-cell" + (c.w2 ? " w2" : "") + (c.strip ? " strip" : "");
+          var body = '<div class="lp-cell-k">' + esc(c.k) + '</div>' +
+            '<h3>' + esc(c.t) + '</h3><p>' + esc(c.d) + '</p>';
+          if (c.mini) body += '<div class="lp-mini">' + c.mini + '</div>';
+          if (c.tree) body += '<div class="lp-tree">' + c.tree + '</div>';
+          body += '<span class="go" aria-hidden="true">자세히 →</span>';
+          return '<a class="' + cls + '" href="#/' + c.id + '">' + body + '</a>';
         }).join("") +
       '</div>' +
     '</section>';
 
-    h += '<section class="lp-sec reveal">' +
-      '<div class="lp-eyebrow">구성</div>' +
-      '<h2 class="lp-h2">여섯 개의 축</h2>' +
-      '<p class="lp-lead">훅이 안전과 맥락을 자동화하고, 스킬·메모리·MCP가 능력과 기억을 확장하고, 루틴·백업이 반복과 보존을 맡습니다.</p>' +
-      '<div class="lp-grid">' +
-        L.features.map(function (f) {
-          return '<a class="lp-card" href="#/' + f.id + '">' +
-            '<div class="lp-card-k">' + esc(f.k) + '</div>' +
-            '<h3>' + esc(f.t) + '</h3>' +
-            '<p>' + esc(f.d) + '</p>' +
-            '<div class="lp-tags">' + f.tags.map(function (t) { return '<span>' + esc(t) + '</span>'; }).join("") + '</div>' +
-            '<span class="lp-card-go" aria-hidden="true">자세히 →</span>' +
-          '</a>';
-        }).join("") +
-      '</div>' +
-    '</section>';
-
-    h += '<section class="lp-sec reveal">' +
-      '<div class="lp-eyebrow">한 줄이면 충분</div>' +
-      '<h2 class="lp-h2">설정 파일에 훅 하나</h2>' +
-      '<p class="lp-lead">' + esc(L.codeCap) + '</p>' +
-      '<div class="lp-code">' +
-        '<div class="lp-code-head"><span>' + esc(L.codeTitle) + '</span></div>' +
-        '<pre><code class="language-json">' + esc(L.code) + '</code></pre>' +
-      '</div>' +
-    '</section>';
-
-    h += '<section class="lp-sec reveal">' +
-      '<div class="lp-eyebrow">도입 순서</div>' +
-      '<h2 class="lp-h2">위에서부터 차례로</h2>' +
-      '<p class="lp-lead">앞 3개만 켜도 매일의 체감이 바뀝니다. 전부 켤 필요는 없습니다. ' +
-      '오른쪽 막대는 체감 효과, 그 옆은 난이도입니다.</p>' +
+    /* steps */
+    h += '<section class="lp-sec reveal lp-steps-wrap" id="lp-a-steps">' +
+      '<span class="ghost" aria-hidden="true">03</span>' +
+      '<div class="lp-eyebrow">Adoption path</div>' +
+      '<h2 class="lp-h2">위에서부터 <span class="hl">차례로</span></h2>' +
+      '<p class="lp-lead">앞 3개만 켜도 매일의 체감이 바뀝니다. 오른쪽 막대는 체감 효과, 그 옆은 난이도입니다.</p>' +
       '<ol class="lp-steps">' +
         L.steps.map(function (s) {
-          var stars = "";
-          for (var i = 0; i < 3; i++) stars += '<i class="' + (i < s.e ? "on" : "") + '"></i>';
+          var bars = "";
+          for (var i = 0; i < 3; i++) bars += '<i class="' + (i < s.e ? "on" : "") + '"></i>';
           return '<li><a href="#/' + s.id + '">' +
             '<span class="lp-step-n">' + s.n + '</span>' +
             '<span class="lp-step-t">' + esc(s.t) + '</span>' +
-            '<span class="lp-step-e" title="체감 효과">' + stars + '</span>' +
+            '<span class="lp-step-e" title="체감 효과">' + bars + '</span>' +
             '<span class="lp-step-lv">' + esc(s.lv) + '</span>' +
           '</a></li>';
         }).join("") +
@@ -181,54 +186,147 @@
       '<p class="lp-more"><a href="#/overview">전체 10단계와 커버리지 맵 보기 →</a></p>' +
     '</section>';
 
-    h += '<section class="lp-final reveal">' +
-      '<h2>10분이면 핵심 3개를 켤 수 있습니다.</h2>' +
-      '<p>설치 순서, 각 항목이 무엇을 막아 주는지, 실패했을 때 무엇을 보면 되는지까지 문서에 있습니다.</p>' +
+    /* final band */
+    h += '<section class="lp-band reveal" id="lp-a-cta">' +
+      '<h2>' + esc(L.bandTitle) + '</h2>' +
+      '<p>' + esc(L.bandSub) + '</p>' +
       '<div class="lp-cta">' +
-        '<a class="btn btn-primary" href="#/00-quickstart">빠른 시작 열기</a>' +
-        '<a class="btn btn-ghost" href="#/overview">전체 개요</a>' +
+        '<a class="btn btn-primary magnet" href="#/00-quickstart">빠른 시작 열기</a>' +
+        '<a class="btn btn-ghost magnet" href="#/overview">전체 개요</a>' +
       '</div>' +
     '</section>';
+
+    /* section dot nav */
+    h += '<nav class="lp-dots" aria-label="랜딩 섹션">' +
+      L.dots.map(function (d) {
+        return '<a href="#" data-sec="' + d.id + '" aria-label="' + esc(d.label) + '"><span>' + esc(d.label) + '</span></a>';
+      }).join("") +
+    '</nav>';
 
     return h;
   }
 
-  /* 스크롤 진입 애니메이션 + 숫자 카운트업 */
-  var revealObs = null;
+  /* ---- 랜딩 상호작용 ---- */
+  var revealObs = null, dotsObs = null;
+  var termGen = 0;                       // 라우팅 시 이전 터미널 루프 무효화
+  var FINE = !!(window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches);
+  var REDUCE = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+
   function setupLanding() {
-    if (window.hljs) {
-      contentEl.querySelectorAll(".lp-code pre code").forEach(function (c) {
-        try { window.hljs.highlightElement(c); } catch (e) {}
-      });
-    }
-    var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     var items = contentEl.querySelectorAll(".reveal");
-    if (reduce || !("IntersectionObserver" in window)) {
+    if (REDUCE || !("IntersectionObserver" in window)) {
       items.forEach(function (el) { el.classList.add("in"); });
       countUp(true);
+    } else {
+      if (revealObs) revealObs.disconnect();
+      revealObs = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (!en.isIntersecting) return;
+          en.target.classList.add("in");
+          revealObs.unobserve(en.target);
+        });
+      }, { rootMargin: "0px 0px -10% 0px", threshold: 0.06 });
+      items.forEach(function (el) { revealObs.observe(el); });
+      countUp(false);
+    }
+    startTerminal();
+    setupDots();
+    if (FINE && !REDUCE) setupMagnet();
+  }
+
+  /* 라이브 터미널 — cmd는 타이핑, 출력은 순차 등장. 끝나면 잠시 쉬고 재생 반복 */
+  function startTerminal() {
+    var el = document.getElementById("lpTerm");
+    if (!el) return;
+    var gen = ++termGen;
+    if (REDUCE) {                         // 모션 최소화: 완성 상태 고정
+      el.innerHTML = L.term.map(function (ln) { return '<span class="tl tl-' + ln.t + '">' + esc(ln.s) + "</span>"; }).join("");
       return;
     }
-    if (revealObs) revealObs.disconnect();
-    revealObs = new IntersectionObserver(function (entries) {
+    function alive() { return gen === termGen && document.getElementById("lpTerm") === el; }
+    function playFrom(idx) {
+      if (!alive()) return;
+      if (idx >= L.term.length) {         // 한 사이클 종료 → 쉬었다가 리셋
+        setTimeout(function () {
+          if (!alive()) return;
+          el.style.opacity = "0";
+          setTimeout(function () {
+            if (!alive()) return;
+            el.innerHTML = ""; el.style.opacity = "1"; playFrom(0);
+          }, 420);
+        }, 3200);
+        return;
+      }
+      var ln = L.term[idx];
+      var span = document.createElement("span");
+      span.className = "tl tl-" + ln.t;
+      el.appendChild(span);
+      if (ln.t === "cmd") {               // 타이핑
+        var caret = document.createElement("span");
+        caret.className = "tl-caret"; span.appendChild(caret);
+        var i = 0;
+        (function type() {
+          if (!alive()) return;
+          if (i < ln.s.length) {
+            caret.insertAdjacentText("beforebegin", ln.s.charAt(i)); i++;
+            setTimeout(type, 26 + Math.random() * 34);
+          } else {
+            caret.remove();
+            setTimeout(function () { playFrom(idx + 1); }, 340);
+          }
+        })();
+      } else {                            // 즉시 출력 라인
+        span.textContent = ln.s;
+        setTimeout(function () { playFrom(idx + 1); }, ln.t === "block" ? 720 : 430);
+      }
+    }
+    el.innerHTML = ""; el.style.transition = "opacity .4s"; el.style.opacity = "1";
+    playFrom(0);
+  }
+
+  /* 섹션 도트 내비 — 현재 섹션 하이라이트 + 클릭 스크롤 */
+  function setupDots() {
+    var nav = contentEl.querySelector(".lp-dots");
+    if (!nav) return;
+    var links = nav.querySelectorAll("a[data-sec]");
+    links.forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        var sec = document.getElementById(a.getAttribute("data-sec"));
+        if (sec) sec.scrollIntoView({ behavior: REDUCE ? "auto" : "smooth", block: "start" });
+      });
+    });
+    if (dotsObs) dotsObs.disconnect();
+    if (!("IntersectionObserver" in window)) return;
+    dotsObs = new IntersectionObserver(function (entries) {
       entries.forEach(function (en) {
         if (!en.isIntersecting) return;
-        en.target.classList.add("in");
-        revealObs.unobserve(en.target);
+        links.forEach(function (a) { a.classList.toggle("on", a.getAttribute("data-sec") === en.target.id); });
       });
-    }, { rootMargin: "0px 0px -12% 0px", threshold: 0.08 });
-    items.forEach(function (el) { revealObs.observe(el); });
-    countUp(false);
+    }, { rootMargin: "-40% 0px -50% 0px", threshold: 0 });
+    L.dots.forEach(function (d) { var s = document.getElementById(d.id); if (s) dotsObs.observe(s); });
+  }
+
+  function setupMagnet() {
+    contentEl.querySelectorAll(".magnet").forEach(function (btn) {
+      btn.addEventListener("pointermove", function (e) {
+        var r = btn.getBoundingClientRect();
+        var px = (e.clientX - r.left) / r.width - .5, py = (e.clientY - r.top) / r.height - .5;
+        btn.style.transform = "translate(" + (px * 8).toFixed(1) + "px," + (py * 6 - 2).toFixed(1) + "px)";
+      });
+      btn.addEventListener("pointerleave", function () { btn.style.transform = ""; });
+    });
   }
 
   function countUp(instant) {
     contentEl.querySelectorAll(".lp-stat b[data-count]").forEach(function (el) {
       var target = parseInt(el.getAttribute("data-count"), 10) || 0;
       if (instant || target === 0) { el.textContent = String(target); return; }
-      var dur = 900, t0 = null;
+      var dur = 1100, t0 = null;
       function step(ts) {
         if (t0 === null) t0 = ts;
         var p = Math.min(1, (ts - t0) / dur);
-        el.textContent = String(Math.round(target * (1 - Math.pow(1 - p, 3))));   // easeOutCubic
+        el.textContent = String(Math.round(target * (1 - Math.pow(1 - p, 3))));
         if (p < 1) requestAnimationFrame(step);
       }
       requestAnimationFrame(step);
@@ -283,30 +381,30 @@
             themeVariables: {
               background: "transparent",
               fontFamily: MERMAID_FONT,
-              primaryColor: dark ? "#1d1d1f" : "#f5f5f7",
-              primaryBorderColor: dark ? "#48484a" : "#d2d2d7",
-              primaryTextColor: dark ? "#f5f5f7" : "#1d1d1f",
-              lineColor: dark ? "#86868b" : "#a1a1a6",
-              secondaryColor: dark ? "#161617" : "#fbfbfd",
-              tertiaryColor: dark ? "#0a0a0a" : "#ffffff",
+              primaryColor: dark ? "#181816" : "#f1f1e9",
+              primaryBorderColor: dark ? "#45453f" : "#d2d2c4",
+              primaryTextColor: dark ? "#f2f2ee" : "#17170f",
+              lineColor: dark ? "#7c7c73" : "#a0a094",
+              secondaryColor: dark ? "#111110" : "#f6f6ef",
+              tertiaryColor: dark ? "#0a0a09" : "#fcfcf9",
               fontSize: "14px",
               // 시퀀스 다이어그램은 classDef를 쓰지 않아 기본 테마(흰 박스·노란 노트)가 그대로 나온다
-              actorBkg: dark ? "#1d1d1f" : "#f5f5f7",
-              actorBorder: dark ? "#48484a" : "#d2d2d7",
-              actorTextColor: dark ? "#f5f5f7" : "#1d1d1f",
-              actorLineColor: dark ? "#48484a" : "#c7c7cc",
-              signalColor: dark ? "#86868b" : "#a1a1a6",
-              signalTextColor: dark ? "#a1a1a6" : "#6e6e73",
-              labelBoxBkgColor: dark ? "#1d1d1f" : "#f5f5f7",
-              labelBoxBorderColor: dark ? "#48484a" : "#d2d2d7",
-              labelTextColor: dark ? "#f5f5f7" : "#1d1d1f",
-              loopTextColor: dark ? "#a1a1a6" : "#6e6e73",
-              noteBkgColor: dark ? "#242118" : "#f7f4ea",
-              noteBorderColor: dark ? "#4a4436" : "#e3dcc9",
-              noteTextColor: dark ? "#f5f5f7" : "#1d1d1f",
-              activationBkgColor: dark ? "#2a2a2c" : "#e8e8ed",
-              activationBorderColor: dark ? "#48484a" : "#c7c7cc",
-              sequenceNumberColor: dark ? "#0a0a0a" : "#ffffff"
+              actorBkg: dark ? "#181816" : "#f1f1e9",
+              actorBorder: dark ? "#45453f" : "#d2d2c4",
+              actorTextColor: dark ? "#f2f2ee" : "#17170f",
+              actorLineColor: dark ? "#45453f" : "#c6c6b8",
+              signalColor: dark ? "#7c7c73" : "#a0a094",
+              signalTextColor: dark ? "#a9a9a1" : "#62625a",
+              labelBoxBkgColor: dark ? "#181816" : "#f1f1e9",
+              labelBoxBorderColor: dark ? "#45453f" : "#d2d2c4",
+              labelTextColor: dark ? "#f2f2ee" : "#17170f",
+              loopTextColor: dark ? "#a9a9a1" : "#62625a",
+              noteBkgColor: dark ? "#1e1f16" : "#f4f6e6",
+              noteBorderColor: dark ? "#494c36" : "#d8dcbc",
+              noteTextColor: dark ? "#f2f2ee" : "#17170f",
+              activationBkgColor: dark ? "#232322" : "#e9e9de",
+              activationBorderColor: dark ? "#45453f" : "#c6c6b8",
+              sequenceNumberColor: dark ? "#0a0a09" : "#ffffff"
             }
           });
           resolve(window.__mermaid);
@@ -366,10 +464,10 @@
       var c = rgbToHsl(rgb);
       if (c.s < .05) return m;                       // 이미 무채색이면 둔다
       if (prop === "color") {                        // 라벨 글자는 대비가 최우선
-        return prop + ":" + (dark ? "#f5f5f7" : "#1d1d1f");
+        return prop + ":" + (dark ? "#f2f2ee" : "#17170f");
       }
-      if (prop === "fill") { c.s = Math.min(c.s, .20); c.l = dark ? .135 : .945; }
-      else                 { c.s = Math.min(c.s, .16); c.l = dark ? .34 : .80; }
+      if (prop === "fill") { c.s = Math.min(c.s, .22); c.l = dark ? .15 : .94; }
+      else                 { c.s = Math.min(c.s, .18); c.l = dark ? .36 : .78; }
       return prop + ":" + hslToHex(c);
     });
   }
@@ -633,6 +731,8 @@
 
   function renderDoc(item, idx, anchor) {
     if (item.landing) return renderLanding(item, idx);
+    termGen++;                                   // 랜딩 터미널 루프 중단
+    if (dotsObs) dotsObs.disconnect();
     contentEl.classList.remove("landing");
     contentEl.innerHTML = '<div class="loading"><span class="spin"></span> 불러오는 중…</div>';
     return fetchDoc(item.file).then(function (md) {
@@ -708,6 +808,8 @@
     var max = d.scrollHeight - d.clientHeight;
     var pct = max > 0 ? (d.scrollTop / max) * 100 : 0;
     progressEl.style.width = pct + "%";
+    var tb = document.querySelector(".topbar");
+    if (tb) tb.classList.toggle("scrolled", d.scrollTop > 6);
   }
 
   /* ---- search ---- */
@@ -754,7 +856,7 @@
     // theme-color starts media-scoped (no-JS fallback); once JS owns the theme, pin it to the chosen one
     document.head.querySelectorAll('meta[name="theme-color"]').forEach(function (m) {
       m.removeAttribute("media");
-      m.setAttribute("content", dark ? "#000000" : "#fbfbfd");
+      m.setAttribute("content", dark ? "#0a0a09" : "#fbfbf8");
     });
     document.getElementById("hljs-theme").href =
       "https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11.9.0/styles/" + (dark ? "github-dark" : "xcode") + ".min.css";
