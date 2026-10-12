@@ -51,7 +51,7 @@ flowchart TB
     CC --> MEM[("🧠 영속 메모리<br/>세션 넘어 기억")]
     CC --> MCP["🔌 MCP 서버<br/>노션·브라우저·문서검색"]
     SCH["⏰ 자동 루틴<br/>일간·주간 보고"] -.->|OS 스케줄러| CC
-    CC --> BK[("💾 주간 백업<br/>설정 유실 방지")]
+    CC --> BK[("💾 주간·일일 백업<br/>설정 유실 방지")]
 
     classDef hook fill:#fff3cd,stroke:#ffc107,color:#664d03;
     classDef core fill:#e7d6ff,stroke:#8A2BE2,color:#3d1a6b;
@@ -68,12 +68,12 @@ flowchart TB
 | 영역 | 무엇 | 핵심 이득 | 문서 |
 |---|---|---|---|
 | 🪝 **훅** | 세션·도구 실행 전후에 끼어드는 자동 스크립트 6종 | 위험 명령 차단, 한글 깨짐 자동 교정, 세션 맥락 주입, caveman `ultra` compact 후 유지 | [01-hooks](docs/01-hooks.md) |
-| 🧩 **스킬** | 작업별 전문 절차를 캡슐화한 모듈 (직접 14종 + 번들) | "PPT 만들어줘" 한마디로 검증된 절차 적용 | [02-skills](docs/02-skills.md) |
+| 🧩 **스킬** | 작업별 전문 절차를 캡슐화한 모듈 (직접 13종 + 번들) | "PPT 만들어줘" 한마디로 검증된 절차 적용 | [02-skills](docs/02-skills.md) |
 | 🧠 **메모리** | 파일 기반 영속 기억 시스템 | 세션이 바뀌어도 취향·결정·맥락 유지 | [03-memory](docs/03-memory.md) |
 | ⏰ **자동 루틴** | 정해진 시간에 도는 보고/정리 작업 | 일간·주간 보고 자동, 메모리 자동 정리 | [04-automation](docs/04-automation.md) |
 | 🔌 **MCP 서버** | 외부 도구 연결(노션·브라우저·문서검색) | Claude가 실제 외부 시스템 직접 조작 | [05-mcp](docs/05-mcp.md) |
 | 🗜️ **caveman** | 토큰 압축 응답 모드 | 같은 작업을 더 적은 토큰으로 | [06-caveman](docs/06-caveman.md) |
-| ⚙️ **설정·백업** | `settings.json` · 상태줄 · 주간 백업 | 환경 재현성, 설정 유실 방지 | [07-settings-backup](docs/07-settings-backup.md) |
+| ⚙️ **설정·백업** | `settings.json` · 상태줄 · 주간+일일 백업 | 환경 재현성, 설정 유실 방지 | [07-settings-backup](docs/07-settings-backup.md) |
 | 🔄 **양 머신 동기화** | 회사 Windows ↔ 집 Mac 설정 일치 | 어느 컴퓨터에서 켜도 같은 환경 | [08-sync-infra](docs/08-sync-infra.md) |
 | 🤖 **멀티에이전트** | 작업을 여러 에이전트로 분산·검증 | 대규모 리뷰/리서치/마이그레이션 병렬 | [09-workflows](docs/09-workflows.md) |
 | 🧩 **플러그인·마켓플레이스** | 플러그인/마켓플레이스 설치·관리 | 도구를 묶음으로 켜고 끄기 | [10-plugins-marketplaces](docs/10-plugins-marketplaces.md) |
@@ -156,8 +156,8 @@ claude-code-toolkit/
 └── examples/                 # 복붙해서 바로 쓰는 산티타이즈 예제
     ├── settings.json         # 훅·플러그인·상태줄 등록 예시
     ├── CLAUDE.md.example     # 글로벌 지침 템플릿
-    ├── backup-claude-settings.ps1 # 주간 백업 스크립트
-    ├── hooks/                # 훅 스크립트 6종
+    ├── backup-claude-settings.ps1 # 주간·일일 백업 스크립트
+    ├── hooks/                # 훅 6종 + 상태줄 해석기
     └── scheduled-tasks/      # 자동 루틴 정의 예시
 ```
 

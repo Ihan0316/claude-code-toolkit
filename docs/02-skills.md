@@ -57,7 +57,7 @@ flowchart TB
     Root --> D["디자인·UX"]
     Root --> E["메타·유틸"]
 
-    A --> A1["pptx / frontend-slides"]
+    A --> A1["pptx / frontend-slides / codex-image"]
     A --> A2["frontend-design / theme-factory"]
     A --> A3["anydesign / d3-viz / web-artifacts-builder"]
 
@@ -72,9 +72,9 @@ flowchart TB
     D --> D2["design-system / ux-copy"]
 
     E --> E1["skill-creator / mcp-builder"]
-    E --> E2["prompt-improver / recursive-research"]
+    E --> E2["recursive-research"]
     E --> E3["docx / pdf / xlsx / schedule"]
-    E --> E4["karpathy-guidelines (행동 가드레일)"]
+    E --> E4["코드 가드레일 → CLAUDE.md 상시 규칙"]
 ```
 
 ---
@@ -85,7 +85,7 @@ flowchart TB
 
 | 스킬 | 용도 | 언제 빛났나 |
 |---|---|---|
-| 📊 `pptx` | PowerPoint 생성/편집/읽기 | 보고용 슬라이드 초안 자동 생성 |
+| 📊 `pptx` | PowerPoint 생성/편집/읽기 | 보고용 슬라이드 초안 자동 생성 (일반은 번들 `anthropic-skills:pptx`, 프로젝트 보고 덱 전용 사본은 로컬에 따로 둠) |
 | 🎨 `anydesign` | 이미지·웹·Figma의 디자인을 토큰/컴포넌트로 추출 | 레퍼런스 UI 분석·복제 |
 | 📈 `d3-viz` | d3.js 인터랙티브 시각화 | 커스텀 차트·네트워크 다이어그램 |
 | 🖥️ `frontend-design` | 완성도 높은 프런트엔드 UI 생성 | 랜딩·대시보드 초안 |
@@ -96,9 +96,8 @@ flowchart TB
 | 🔥 `pytorch-patterns` | PyTorch 학습 파이프라인 베스트프랙티스 | 재현 가능한 학습 코드 |
 | 👁️ `senior-computer-vision` | 객체탐지·세그멘테이션·배포 | YOLO/DETR 파이프라인, ONNX/TensorRT |
 | 🔌 `mcp-builder` | MCP 서버 제작 가이드 | 외부 API를 Claude 도구로 |
-| ✍️ `prompt-improver` | 모호한 프롬프트를 리서치·질문으로 보강 | 훅과 연동해 되묻기 |
+| 🖼️ `codex-image` | Codex CLI 내장 image_gen으로 이미지 생성 (OAuth, API 키 불필요) | 문서·슬라이드용 일러스트 |
 | 🔬 `recursive-research` | 자기조절 재귀 심층 리서치 | 도메인 깊이 탐구 |
-| 🧭 `karpathy-guidelines` | LLM 코딩 실수 차단 4대 가드레일(과설계·범위이탈·침묵추측·미검증 완료) | 자율 코드 작업의 품질 안전망 |
 
 > [!NOTE]
 > 컴퓨터 비전 배경 + 프런트엔드 보고 산출물이라는 작업 조합이라, **CV 학습(pytorch / cv) + 보고 산출물(pptx / frontend / theme) 양쪽**을 함께 설치했습니다. 자신의 주력 작업 두세 갈래를 먼저 정하고, 그 갈래에 해당하는 스킬부터 까는 게 시행착오를 줄입니다.
@@ -214,7 +213,9 @@ description: <언제 이 스킬을 써야 하는지 — 구체적 트리거 문�
 > [!NOTE]
 > **출처**: 스킬은 [ComposioHQ/awesome-claude-skills](https://github.com/ComposioHQ/awesome-claude-skills) · [travisvn/awesome-claude-skills](https://github.com/travisvn/awesome-claude-skills) · [VoltAgent/awesome-agent-skills](https://github.com/VoltAgent/awesome-agent-skills) 같은 모음을 1차 소스로 참고해 `~/.claude/skills/`에 설치하면 됩니다. 모음에서 가져온 스킬도 `description`은 자신의 작업 어휘에 맞게 다듬어 두는 게 자동 선택 정확도에 유리합니다.
 >
-> `karpathy-guidelines`는 [multica-ai/andrej-karpathy-skills](https://github.com/multica-ai/andrej-karpathy-skills)(MIT)의 4대 행동 가드레일을 한국어·자율운영 환경에 맞춰 각색해 설치했습니다.
+> **은퇴한 스킬 2종** — 스킬은 "필요할 때 불려야" 하는데, 상시 지켜야 할 규칙은 자율 호출되지 않아 효과가 없었습니다.
+> - `karpathy-guidelines` ([multica-ai/andrej-karpathy-skills](https://github.com/multica-ai/andrej-karpathy-skills), MIT) → 4대 코드 가드레일을 **글로벌 `CLAUDE.md` 상시 규칙으로 흡수** ([examples/CLAUDE.md.example](../examples/CLAUDE.md.example) 7절).
+> - `prompt-improver` → 훅이 스킬을 부르던 구조를 없애고 **판정을 훅 스크립트가 직접** 하도록 경량화 ([01. 훅 4](01-hooks.md)).
 
 ---
 

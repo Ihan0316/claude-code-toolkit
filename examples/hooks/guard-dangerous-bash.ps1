@@ -6,6 +6,10 @@ param()
 
 $ErrorActionPreference = 'Stop'
 
+# 차단 사유가 CP949로 깨져 나오지 않게 stderr를 UTF-8로 고정한다
+# (OutputEncoding 세터가 Console.Out/Console.Error 라이터를 함께 재생성한다)
+[Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($false)
+
 try {
     $raw = [Console]::In.ReadToEnd()
     if (-not $raw) { exit 0 }

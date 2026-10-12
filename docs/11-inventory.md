@@ -36,16 +36,17 @@ flowchart TB
 | `CLAUDE.md` (글로벌 지침) | ✅ 담김 | [examples/CLAUDE.md.example](../examples/CLAUDE.md.example) · [00](00-quickstart.md) |
 | `settings.json` | ✅ 담김 | [examples/settings.json](../examples/settings.json) · [07](07-settings-backup.md) |
 | `hooks/` (훅 스크립트) | ✅ 담김 | [examples/hooks/](../examples/hooks) · [01](01-hooks.md) |
+| `hooks/` 멀티 세션 운영 훅 (소유권 가드·보드 Stop·관리자 부트스트랩·컨텍스트 상한) | 🔒 제외 | 프로젝트 경로·이름 하드코딩 → [01](01-hooks.md) 에 패턴만 |
 | `skills/` (스킬) | ✅ 담김 | [02](02-skills.md) (목록·기준·제작) |
 | `scheduled-tasks/` (자동 루틴) | ✅ 담김 | [examples/scheduled-tasks/](../examples/scheduled-tasks) · [04](04-automation.md) |
-| `plugins/` (마켓플레이스) | ✅ 담김 | [10](10-plugins-marketplaces.md) (2개 마켓·플러그인군) |
-| `statusLine` (caveman) | ✅ 담김 | [06](06-caveman.md) · [07](07-settings-backup.md) |
+| `plugins/` (마켓플레이스) | ✅ 담김 | [10](10-plugins-marketplaces.md) (2개 마켓 · caveman·notion 활성) |
+| `statusLine` (caveman, 해석기 경유) | ✅ 담김 | [examples/hooks/caveman-statusline-resolve.ps1](../examples/hooks/caveman-statusline-resolve.ps1) · [06](06-caveman.md) · [07](07-settings-backup.md) |
 | 메모리 **구조/규칙** | ✅ 담김 | [03](03-memory.md) (형식·type·인덱스) |
 | 메모리 **본문 내용** | 🔒 제외 | 회사·프로젝트 사실 → 민감 |
 | `.credentials.json` | 🔒 제외 | 로그인 토큰 → 절대 공유·커밋 금지 |
 | MCP 서버 **목록/원칙** | ✅ 담김 | [05](05-mcp.md) |
 | MCP **인증 토큰** | 🔒 제외 | 머신별 발급 자격증명 |
-| 프로젝트별 루틴(`*-soak`, `*-digest` 등) | 🔒 제외 | 실제 프로젝트 식별·경로 포함 |
+| 프로젝트별 루틴(`*-soak`, `*-digest`, `control-tower-sweep*` 등) | 🔒 제외 | 실제 프로젝트 식별·경로 포함 |
 | `.claude.json` | ⚙️ 제외 | 머신별 런타임 상태 |
 | `sessions/` · `shell-snapshots/` · `ide/` | ⚙️ 제외 | 세션 런타임 |
 | `cache/` · `downloads/` · `telemetry/` | ⚙️ 제외 | 캐시·텔레메트리 |
@@ -62,7 +63,8 @@ flowchart TB
 | `ensure-utf8-bom.ps1` | ✅ 담김 | [examples/hooks/](../examples/hooks/ensure-utf8-bom.ps1) |
 | `session-context.ps1` | ✅ 담김 | [examples/hooks/](../examples/hooks/session-context.ps1) |
 | `caveman-reinforce-ultra.js` | ✅ 담김 | [examples/hooks/](../examples/hooks/caveman-reinforce-ultra.js) (Node, caveman `ultra` 유지) |
-| `backup-claude-settings.ps1` | ✅ 담김 | [examples/](../examples/backup-claude-settings.ps1) |
+| `caveman-statusline-resolve.ps1` | ✅ 담김 | [examples/hooks/](../examples/hooks/caveman-statusline-resolve.ps1) (플러그인 해시 폴더 동적 탐색) |
+| `backup-claude-settings.ps1` | ✅ 담김 | [examples/](../examples/backup-claude-settings.ps1) (주간·일일 겸용 `-DestDir`·`-Retention`) |
 
 > [!NOTE]
 > 위 스크립트들은 `$env:USERPROFILE` 기준 상대 경로와 `<...>` placeholder만 쓰도록 정리했습니다. 개인 절대 경로·작업명은 모두 치환되어 있어 그대로 복사해도 안전합니다.

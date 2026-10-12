@@ -70,13 +70,13 @@
         d: "한 파일 한 사실. 인덱스로 회수합니다.",
         tree: 'memory/\n├─ <b>MEMORY.md</b>        <i>← 인덱스</i>\n├─ user_profile.md\n└─ feedback_*.md' },
       { k: "Skills", t: "검증된 절차를 한마디로", id: "02-skills",
-        d: '작업별 절차를 캡슐화한 모듈 14종. "PPT 만들어줘" 한마디면 충분합니다.' },
+        d: '작업별 절차를 캡슐화한 모듈 13종. "PPT 만들어줘" 한마디면 충분합니다.' },
       { k: "MCP", t: "외부 시스템 직접 조작", id: "05-mcp",
         d: "노션·브라우저·문서검색을 Claude가 직접 다룹니다. 복붙 왕복이 사라집니다." },
       { k: "Automation", t: "보고서가 알아서 쌓인다", id: "04-automation",
         d: "일간·주간 보고와 백업을 OS 스케줄러에 위임합니다." },
       { k: "Sync", t: "회사 Windows ↔ 집 Mac, 같은 환경", id: "08-sync-infra", strip: true,
-        d: "설정을 저장소로 동기화하고 주간 백업으로 유실을 막습니다." }
+        d: "설정을 저장소로 동기화하고 주간·일일 백업으로 유실을 막습니다." }
     ],
     steps: [
       { n: 1, t: "CLAUDE.md 글로벌 지침", e: 3, lv: "쉬움", id: "00-quickstart" },

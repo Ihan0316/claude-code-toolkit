@@ -186,15 +186,18 @@ caveman 마켓플레이스는 압축 모드 외에도 유용한 서브 도구를
   "enabledPlugins": { "caveman@caveman": true },
   "statusLine": {
     "type": "command",
-    "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"<caveman-cache>\\caveman-statusline.ps1\""
+    "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"<HOOKS_DIR>\\caveman-statusline-resolve.ps1\""
   }
 }
 ```
 
+> [!WARNING]
+> 상태줄 스크립트는 플러그인 캐시의 `<커밋해시>` 폴더 아래 있어서, 경로를 직접 적으면 **플러그인 업데이트 때 상태줄이 조용히 사라집니다.** 해시 폴더를 동적으로 찾는 해석기([caveman-statusline-resolve.ps1](../examples/hooks/caveman-statusline-resolve.ps1))를 거쳐 등록하세요. 자세한 동작은 [07. 상태줄](07-settings-backup.md#-상태줄statusline).
+
 <details>
 <summary>🪟 Windows·한국어 환경 추가 주의</summary>
 
-- `statusLine`의 PowerShell 스크립트 경로에 한글이 포함되면, 인코딩 문제로 깨질 수 있습니다. 경로는 가급적 ASCII로 유지하거나 `<caveman-cache>` 같은 placeholder가 가리키는 실제 경로를 직접 확인하세요.
+- `statusLine`의 PowerShell 스크립트 경로에 한글이 포함되면, 인코딩 문제로 깨질 수 있습니다. 경로는 가급적 ASCII로 유지하거나 `<HOOKS_DIR>` 같은 placeholder가 가리키는 실제 경로를 직접 확인하세요.
 - 스크립트 파일 자체에 한글 문자열이 있다면 **UTF-8 BOM**으로 저장해야 CP949로 오해석되지 않습니다.
 - 콘솔에서 상태줄이 깨져 보여도 파일 자체는 정상일 수 있습니다. 코드페이지(`chcp`) 문제와 파일 인코딩 문제를 구분해서 진단하세요.
 

@@ -42,10 +42,10 @@ flowchart TB
 | 마켓플레이스 | 소스 | 용도 | 활성 플러그인 |
 |---|---|---|---|
 | 🗿 **caveman** | 커스텀 GitHub(`<github-user>/caveman`) | 토큰 압축 모드 | `caveman@caveman` ✅ |
-| 📦 **claude-plugins-official** | 공식 마켓플레이스 | LSP·개발 워크플로·메타·커넥터 등 다수 | (필요 시 on-demand) |
+| 📦 **claude-plugins-official** | 공식 마켓플레이스 | LSP·개발 워크플로·메타·커넥터 등 다수 | `notion@claude-plugins-official` ✅ (그 외 on-demand) |
 
 > [!TIP]
-> 공식 마켓플레이스는 **"소스로 등록만 해두고, 필요할 때 꺼내 쓰는"** 형태로 운영합니다. 등록 자체는 비용이 없고, 막상 LSP나 특정 커넥터가 필요해졌을 때 곧바로 활성화할 수 있어 편리합니다. 이 셋업에서 상시 켜 둔 플러그인은 caveman 하나뿐입니다.
+> 공식 마켓플레이스는 **"소스로 등록만 해두고, 필요할 때 꺼내 쓰는"** 형태로 운영합니다. 등록 자체는 비용이 없고, 막상 LSP나 특정 커넥터가 필요해졌을 때 곧바로 활성화할 수 있어 편리합니다. 이 셋업에서 상시 켜 둔 플러그인은 caveman · notion 두 개입니다.
 
 ---
 

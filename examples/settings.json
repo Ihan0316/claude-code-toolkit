@@ -1,5 +1,7 @@
 {
   "//": "산티타이즈된 ~/.claude/settings.json 예시. <...> placeholder를 본인 경로로 교체.",
+  "model": "fable[1m]",
+  "cleanupPeriodDays": 999999,
   "hooks": {
     "SessionStart": [
       {
@@ -34,7 +36,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"<HOOKS_DIR>\\guard-dangerous-bash.ps1\"",
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"<HOOKS_DIR>\\guard-dangerous-bash.ps1\"; exit $LASTEXITCODE",
             "shell": "powershell",
             "timeout": 5
           }
@@ -78,16 +80,34 @@
     }
   },
   "enabledPlugins": {
-    "caveman@caveman": true
+    "caveman@caveman": true,
+    "notion@claude-plugins-official": true
   },
   "statusLine": {
     "type": "command",
-    "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"<CAVEMAN_CACHE>\\caveman-statusline.ps1\""
+    "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"<HOOKS_DIR>\\caveman-statusline-resolve.ps1\""
   },
   "theme": "dark",
   "autoUpdatesChannel": "latest",
   "remoteControlAtStartup": true,
   "inputNeededNotifEnabled": true,
   "agentPushNotifEnabled": true,
-  "skipWorkflowUsageWarning": true
+  "skipWorkflowUsageWarning": true,
+  "modelSettings": {
+    "claude-fable-5-1": {
+      "autoCompactWindow": 300000
+    },
+    "claude-opus-5-5": {
+      "autoCompactWindow": 500000
+    }
+  },
+  "mcpServers": {
+    "hwp-mcp": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "hwp-mcp@latest"
+      ]
+    }
+  }
 }

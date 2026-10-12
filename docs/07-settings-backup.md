@@ -18,12 +18,16 @@
 
 | 항목 | 값 | 이유 |
 |---|---|---|
-| 🪝 `hooks` | 6종 등록 | 안전·맥락 자동화 ([01-hooks.md](01-hooks.md)) |
+| 🧠 `model` | `fable[1m]` | 기본 모델 + 1M 컨텍스트 |
+| 📏 `modelSettings` | 모델별 `autoCompactWindow` (Fable 30만 · Opus 50만) | 1M 창을 다 채우기 전에 자동 compact → 응답 품질·비용 관리 |
+| 🗃️ `cleanupPeriodDays` | `999999` | 세션 트랜스크립트 자동 삭제 끔 (메모리·회고·보고의 원자료) |
+| 🪝 `hooks` | 공개 6종 (+ 비공개 운영 훅) | 안전·맥락 자동화 ([01-hooks.md](01-hooks.md)) |
 | 🏪 `extraKnownMarketplaces` | caveman 마켓 등록 | 커스텀 플러그인 소스 ([10-plugins-marketplaces.md](10-plugins-marketplaces.md)) |
-| 📊 `statusLine` | caveman 상태줄 | 현재 모드/토큰 상태 표시 |
+| 📊 `statusLine` | caveman 상태줄 (해석기 경유) | 현재 모드/토큰 상태 표시 — [아래](#-상태줄statusline) |
 | 🎨 `theme` | `dark` | 어두운 환경에서의 가독성 |
 | 🔄 `autoUpdatesChannel` | `latest` | 최신 기능·수정 사항 추적 |
-| 🧩 `enabledPlugins` | `caveman@caveman` | 토큰 압축 ([06-caveman.md](06-caveman.md)) |
+| 🧩 `enabledPlugins` | `caveman@caveman` · `notion@claude-plugins-official` | 토큰 압축 ([06](06-caveman.md)) · 노션 연동 ([10](10-plugins-marketplaces.md)) |
+| 🔌 `mcpServers` | `hwp-mcp` (npx) | 한글(HWP) 문서 읽기·쓰기 ([05-mcp.md](05-mcp.md)) |
 | 🔔 `inputNeededNotifEnabled` | `true` | 입력이 필요할 때 알림(자리를 비울 때 유용) |
 | 🔔 `agentPushNotifEnabled` | `true` | 에이전트 작업 완료 시 푸시 알림 |
 | 🛰️ `remoteControlAtStartup` | `true` | 시작 시 원격 제어 활성화 |
@@ -111,14 +115,33 @@
 - 🔢 토큰 사용량 / 압축 모드 표시
 - 🕒 마지막 백업 경과일 같은 운영 신호 표시
 
+### 🧭 플러그인 상태줄은 해석기를 거쳐 붙인다
+
+caveman 상태줄 스크립트는 플러그인 캐시 `plugins/cache/caveman/caveman/<커밋해시>/…` 아래에 있습니다. settings.json에 이 경로를 **직접** 적으면 플러그인이 업데이트되는 순간 해시 폴더가 바뀌어 상태줄이 **조용히 사라집니다.**
+
+그래서 작은 해석기 스크립트를 하나 두고 그것을 등록합니다.
+
+```jsonc
+"statusLine": {
+  "type": "command",
+  "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"<HOOKS_DIR>\caveman-statusline-resolve.ps1\""
+}
+```
+
+1. 캐시 파일에 저장된 경로가 아직 유효하면 그대로 실행
+2. 아니면 캐시 폴더를 재귀 탐색해 최신 `caveman-statusline.ps1` 을 찾아 캐시 갱신
+3. 못 찾으면 조용히 종료 (오류 출력 없이 상태줄만 비움)
+
+→ [examples/hooks/caveman-statusline-resolve.ps1](../examples/hooks/caveman-statusline-resolve.ps1)
+
 > [!NOTE]
 > 상태줄 스크립트는 매 갱신마다 호출되므로 **가볍고 빨라야** 합니다. 네트워크 호출이나 무거운 연산을 넣으면 상태줄이 화면 갱신을 지연시킬 수 있으니, 로컬에서 즉시 끝나는 정보만 넣는 것이 좋습니다.
 
 ---
 
-## 💾 주간 백업 — 설정 유실 방지
+## 💾 주간 + 일일 백업 — 설정 유실 방지
 
-앞서 말했듯 설정·메모리·스킬은 시간이 쌓일수록 자산이 되고, 한 번 날아가면 복구 비용이 큽니다. 그래서 이 셋업은 **주 1회 zip 백업**을 자동화했습니다. 사람이 기억해서 누르는 백업은 결국 잊히기 때문에, 자동화가 핵심입니다.
+앞서 말했듯 설정·메모리·스킬은 시간이 쌓일수록 자산이 되고, 한 번 날아가면 복구 비용이 큽니다. 그래서 이 셋업은 **주 1회(8개 보관) + 매일(30개 보관) zip 백업**을 같은 스크립트로 자동화했습니다. 사람이 기억해서 누르는 백업은 결국 잊히기 때문에, 자동화가 핵심입니다.
 
 ### 📦 백업 범위 (포함 / 제외)
 
@@ -129,13 +152,23 @@
 | `<HOME>/.claude.json` | ✅ 포함 | 런타임 설정 |
 | 각 프로젝트의 `.claude/` | ✅ 포함 | 프로젝트별 설정 |
 | 각 프로젝트의 `CLAUDE.md` | ✅ 포함 | 프로젝트 메모리 |
+| 훅 스크립트 폴더 · 작업 스케줄러 XML | ✅ 포함 | 자동화 정의 |
+| 앱 `scheduled-tasks.json` | ✅ 포함 | 자동 루틴 cron 등록. 상시 존재하지 않아 **찾았을 때 미러에 보관 → 못 찾으면 미러본으로 대체** |
+| 데스크톱 앱 세션 레지스트리 `local_*.json` | ✅ 포함 | 사이드바 세션 제목·즐겨찾기. MSIX 설치본은 앱 업데이트 때 초기화됨 → 누적 미러 |
 
 > [!CAUTION]
 > `.credentials.json`은 로그인 토큰을 담고 있습니다. 만약 이 파일을 백업 zip에 함께 넣으면, **백업본이 어딘가로 새는 순간 인증 토큰까지 함께 새어 나갑니다.** 그래서 다른 모든 것을 백업하면서도 이 파일 하나만은 일부러 제외합니다. 편의가 아니라 보안 결정입니다.
 
-### 🔄 보관 정책 — 8주 롤링
+### 🔄 보관 정책 — 롤링
 
-백업은 **최근 8개의 zip만 유지**하고, 그보다 오래된 백업은 자동으로 삭제합니다. 주 1회 백업이므로 8개는 곧 약 8주분에 해당합니다.
+스크립트는 `-DestDir`·`-Retention` 인자를 받아 같은 로직을 두 작업에서 재사용합니다.
+
+| 작업 | 시각 | 저장 위치 | 보관 |
+|---|---|---|---|
+| 주간 | 매주 금 13:00 | `<BACKUP_DIR>` | 최근 8개 (≈ 8주) |
+| 일일 | 매일 12:30 | `<BACKUP_DIR>\daily` | 최근 30개 (≈ 30일) |
+
+보관 개수를 넘으면 가장 오래된 zip부터 자동 삭제합니다. 아래 그림은 주간 기준입니다.
 
 ```mermaid
 flowchart TB
@@ -167,11 +200,11 @@ flowchart TB
 
 ### ⏰ 등록 (스케줄러)
 
-플랫폼별 스케줄러에 백업 스크립트를 같은 시각(매주 금 13:00)에 등록합니다.
+플랫폼별 스케줄러에 백업 스크립트를 등록합니다 (주간: 매주 금 13:00 · 일일: 매일 12:30 `-DestDir <BACKUP_DIR>\daily -Retention 30`).
 
 | 플랫폼 | 등록 방법 | 작업 이름 / 형식 |
 |---|---|---|
-| 🪟 Windows | 작업 스케줄러 | `<백업 작업 이름>` 작업으로 매주 금 13:00 실행 |
+| 🪟 Windows | 작업 스케줄러 | `<WEEKLY_BACKUP_TASK>` (금 13:00) · `<DAILY_BACKUP_TASK>` (매일 12:30) |
 | 🍎 macOS | `launchd` plist | 동일 시각으로 plist 등록 |
 
 > [!WARNING]

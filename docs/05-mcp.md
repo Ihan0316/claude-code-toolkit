@@ -27,7 +27,8 @@ MCP(Model Context Protocol)는 Claude를 외부 도구·서비스에 연결하�
 
 | MCP | 무엇을 하나 | 왜 유용했나 |
 |---|---|---|
-| 📝 **Notion** | 페이지·DB 생성/수정/검색 | 일간·주간 보고를 노션에 **직접** 기록 (복붙 왕복 제거) |
+| 📝 **Notion** | 페이지·DB 생성/수정/검색 | 일간·주간 보고를 노션에 **직접** 기록 (복붙 왕복 제거). 지금은 공식 `notion` 플러그인으로 켬 ([10](10-plugins-marketplaces.md)) |
+| 📄 **hwp-mcp** | 한글(HWP) 문서 읽기·작성 | 국내 기관·회사 양식이 HWP라 변환 왕복 없이 바로 처리. `settings.json` `mcpServers` 에 `npx -y hwp-mcp@latest` 로 등록 |
 | 📚 **문서 검색(Context7류)** | 라이브러리·프레임워크 최신 공식 문서 fetch | 학습 데이터에 없는 **최신 API**를 환각 없이 정확히 |
 | 🖥️ **computer-use** | 데스크톱 화면 캡처 + 마우스/키보드 제어 | 브라우저 밖 **네이티브 앱** 자동화 |
 | 🌐 **Claude in Chrome** | 브라우저 DOM 인지 조작 | 웹앱 폼 입력·네비게이션 (픽셀 좌표보다 빠르고 안정적) |
