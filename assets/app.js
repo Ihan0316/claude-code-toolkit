@@ -43,7 +43,7 @@
     sub: '6개월 실무에서 매일 쓰며 다듬은 훅 · 스킬 · 메모리 · 자동화. ' +
          '단순 "이렇게 하세요"가 아니라 <b>무엇을 / 왜 썼고 / 무엇이 좋아졌는지</b>까지 적었습니다.',
     stats: [
-      { n: 12, s: "docs" }, { n: 6, s: "hooks" }, { n: 14, s: "skills" }, { n: 0, s: "secrets" }
+      { n: 12, s: "docs" }, { n: 6, s: "hooks" }, { n: 13, s: "skills" }, { n: 0, s: "secrets" }
     ],
     termTitle: "claude — 세션 데모",
     // 라이브 터미널 대본: cmd는 타이핑, 나머지는 순차 출력
@@ -104,6 +104,7 @@
 
     /* hero — 좌: 카피 / 우: 라이브 터미널 */
     h += '<section class="lp-hero" id="lp-a-hero">' +
+      '<div class="lp-aurora" aria-hidden="true"><i></i><i></i><i></i></div>' +
       '<div class="lp-hero-copy">' +
         '<div class="lp-kicker"><span class="pulse"></span>' + esc(L.kicker) + '</div>' +
         '<h1 class="lp-title">' +
@@ -231,7 +232,33 @@
     }
     startTerminal();
     setupDots();
-    if (FINE && !REDUCE) setupMagnet();
+    if (FINE && !REDUCE) { setupMagnet(); setupSpotlight(); }
+  }
+
+  /* 커서 스포트라이트 — 히어로 격자·벤토 광원은 CSS 변수(--mx/--my)로, 터미널은 살짝 기울인다 */
+  function setupSpotlight() {
+    function track(el) {
+      el.addEventListener("pointermove", function (e) {
+        var r = el.getBoundingClientRect();
+        el.style.setProperty("--mx", (e.clientX - r.left).toFixed(0) + "px");
+        el.style.setProperty("--my", (e.clientY - r.top).toFixed(0) + "px");
+      });
+    }
+    var hero = contentEl.querySelector(".lp-hero");
+    if (hero) {
+      track(hero);
+      hero.addEventListener("pointerleave", function () { hero.style.removeProperty("--mx"); hero.style.removeProperty("--my"); });
+    }
+    contentEl.querySelectorAll(".lp-cell").forEach(track);
+    var term = contentEl.querySelector(".lp-term");
+    if (term) {
+      term.addEventListener("pointermove", function (e) {
+        var r = term.getBoundingClientRect();
+        var px = (e.clientX - r.left) / r.width - .5, py = (e.clientY - r.top) / r.height - .5;
+        term.style.transform = "perspective(1100px) rotateY(" + (px * 7).toFixed(2) + "deg) rotateX(" + (-py * 7).toFixed(2) + "deg)";
+      });
+      term.addEventListener("pointerleave", function () { term.style.transform = ""; });
+    }
   }
 
   /* 라이브 터미널 — cmd는 타이핑, 출력은 순차 등장. 끝나면 잠시 쉬고 재생 반복 */
