@@ -875,6 +875,121 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 }
 @keyframes bandSweep { 0% { left: -40%; } 40%, 100% { left: 130%; } }
 
+/* ===================================================================
+   Doc flair — 랜딩과 같은 톤: 오로라 헤더 · 스크롤 리빌 · 커서 광원
+   =================================================================== */
+/* 문서 헤더: 격자 + 오로라 + 큰 외곽선 번호 */
+.doc-hero {
+  position: relative; isolation: isolate;
+  padding: 26px 0 30px; margin: -6px 0 36px;
+  border-bottom: 1px solid var(--border-soft);
+}
+.doc-hero::before {
+  content: ""; position: absolute; inset: -60px -80px 0; z-index: -1; pointer-events: none;
+  background-image:
+    linear-gradient(var(--border-soft) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border-soft) 1px, transparent 1px);
+  background-size: 48px 48px; opacity: .55;
+  -webkit-mask-image: radial-gradient(70% 90% at 30% 30%, #000 20%, transparent 72%);
+          mask-image: radial-gradient(70% 90% at 30% 30%, #000 20%, transparent 72%);
+}
+.doc-hero::after {  /* 하단 경계선 위를 흐르는 빛 */
+  content: ""; position: absolute; left: 0; bottom: -1px; height: 1px; width: 30%;
+  background: linear-gradient(90deg, transparent, var(--accent), var(--accent-2), transparent);
+  animation: edgeRun 5s var(--ease) .8s infinite;
+}
+@keyframes edgeRun { 0% { left: -30%; opacity: 0; } 15% { opacity: 1; } 60%, 100% { left: 100%; opacity: 0; } }
+.doc-hero .lp-aurora { inset: -110px -60px -20px; opacity: .38; }
+[data-theme="light"] .doc-hero .lp-aurora { opacity: .22; }
+.doc-ghost {
+  position: absolute; right: -.02em; top: -18px; z-index: -1; pointer-events: none; user-select: none;
+  font-family: var(--font-mono); font-weight: 700; line-height: .8;
+  font-size: clamp(96px, 15vw, 184px);
+  color: transparent; -webkit-text-stroke: 1px color-mix(in srgb, var(--accent) 38%, var(--border));
+  opacity: .5;
+  animation: ghostIn 1.2s var(--ease-out) .15s backwards;
+}
+@keyframes ghostIn { from { opacity: 0; transform: translateY(24px) scale(.94); filter: blur(6px); } }
+.doc-hero h1 {
+  margin-bottom: 18px;
+  background: linear-gradient(180deg, var(--text) 52%, color-mix(in srgb, var(--accent) 62%, var(--text)));
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+}
+.doc-hero .doc-lead { margin-bottom: 0; }
+.markdown-body .doc-hero + hr { display: none; }
+.doc-eyebrow .pulse { flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: pulse 2.4s ease-in-out infinite; }
+
+/* 스크롤 진행 막대: 라임 → 민트 + 빛번짐 */
+.scroll-progress {
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  box-shadow: 0 0 12px var(--glow), 0 0 4px var(--accent);
+}
+
+/* h2 밑줄: 라임→민트 그라디언트, 화면에 들어올 때 그려진다 */
+.markdown-body h2::after {
+  width: 56px; background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  box-shadow: 0 0 12px var(--glow);
+  transform-origin: left;
+}
+.markdown-body h2.dr::after { transform: scaleX(0); transition: transform .9s var(--ease-out) .25s; }
+.markdown-body h2.dr.in::after { transform: scaleX(1); }
+
+/* 스크롤 리빌 (첫 화면 밖 블록만 JS가 .dr 을 붙인다) */
+.dr { opacity: 0; transform: translateY(18px); transition: opacity .7s var(--ease-out), transform .7s var(--ease-out); }
+.dr.in { opacity: 1; transform: none; }
+
+/* 커서 광원: JS가 .spot 을 붙이고 --mx/--my 를 갱신한다 */
+.spot { position: relative; isolation: isolate; }
+.spot::before, .spot::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  opacity: 0; transition: opacity .35s var(--ease); z-index: 0;
+}
+.spot::before {
+  background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 50%), color-mix(in srgb, var(--accent) 9%, transparent), transparent 62%);
+}
+.spot::after {
+  padding: 1px;
+  background: radial-gradient(240px circle at var(--mx, 50%) var(--my, 50%), var(--accent), transparent 66%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+}
+.spot:hover::before, .spot:hover::after { opacity: 1; }
+.spot > * { position: relative; z-index: 1; }
+.callout.spot { border-left-color: currentColor; }
+
+/* 코드 블록: 신호등 점 + 호버 시 살짝 떠오름 */
+.code-dots i:nth-child(1) { background: #ff5f57; opacity: 1; }
+.code-dots i:nth-child(2) { background: #febc2e; opacity: 1; }
+.code-dots i:nth-child(3) { background: #28c840; }
+.code-block { transition: transform .3s var(--ease-out), box-shadow .3s var(--ease); }
+.code-block:hover { transform: translateY(-2px); box-shadow: 0 18px 40px -22px rgba(0,0,0,.7), 0 0 40px -24px var(--glow); }
+.code-head { background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 6%, transparent), transparent 60%); }
+
+/* 콜아웃: 자기 색으로 은은한 그라디언트 */
+.callout { background: linear-gradient(100deg, color-mix(in srgb, currentColor 9%, var(--surface-solid)), var(--surface) 55%); }
+.callout-title .ico { box-shadow: 0 0 14px color-mix(in srgb, currentColor 35%, transparent); }
+
+/* 표: 헤더 하단 라임 라인, 행 호버 시 좌측 마커 */
+.markdown-body thead th { box-shadow: inset 0 -1px 0 color-mix(in srgb, var(--accent) 35%, transparent); }
+.markdown-body tbody tr:hover td:first-child { box-shadow: inset 2px 0 0 var(--accent); }
+
+/* 다이어그램: 점 격자 배경 */
+.mermaid {
+  background-color: var(--bg-2);
+  background-image: radial-gradient(color-mix(in srgb, var(--text) 9%, transparent) 1px, transparent 1px);
+  background-size: 18px 18px;
+}
+
+/* 접힘 블록: 열리면 라임 테두리 */
+.markdown-body details[open] { border-color: color-mix(in srgb, var(--accent) 40%, var(--border)); box-shadow: 0 0 30px -18px var(--glow); }
+
+/* TOC: 활성 표시에 빛번짐 */
+.toc a.active::before { box-shadow: 0 0 10px var(--accent); }
+
+/* 페이저: 화살표가 밀려 나간다 */
+.pager a .lbl { transition: color .25s var(--ease), letter-spacing .3s var(--ease-out); }
+.pager a:hover .lbl { color: var(--accent); letter-spacing: .06em; }
+
 /* ===== Mobile ===== */
 .overlay { position: fixed; inset: var(--topbar-h) 0 0 0; background: rgba(5, 5, 4, .5); backdrop-filter: blur(3px); z-index: 45; }
 @media (max-width: 1200px) { .toc { display: none; } }
@@ -907,6 +1022,8 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   .lp-cell.strip .go { margin: 6px 0 0; }
   .lp-sec { padding: 56px 0; }
   .ghost { font-size: 110px; opacity: .3; }
+  .doc-hero::before { inset: -30px -22px 0; }
+  .doc-ghost { font-size: 92px; opacity: .35; }
   .lp-step-lv { display: none; }
   .lp-stats { gap: 14px 0; }
   .lp-stat { padding-right: 18px; margin-right: 18px; }
@@ -933,8 +1050,13 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   .lp-title .hl::after { transform: scaleX(1); }
   .lp-aurora i, .lp-term::before, .lp-flow::after, .lp-band::after { animation: none !important; }
   .lp-flow::after, .lp-band::after { display: none; }
+  .doc-hero::after { display: none; }
+  .dr { opacity: 1; transform: none; }
 }
 
 /* ===== Focus accessibility ===== */
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
 .nav a:focus-visible, .pager a:focus-visible { outline-offset: -2px; }
+
+/* ===== Print ===== */
+@media print { .dr { opacity: 1 !important; transform: none !important; } .lp-aurora, .doc-ghost { display: none; } }

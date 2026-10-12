@@ -235,15 +235,46 @@
     if (FINE && !REDUCE) { setupMagnet(); setupSpotlight(); }
   }
 
-  /* 커서 스포트라이트 — 히어로 격자·벤토 광원은 CSS 변수(--mx/--my)로, 터미널은 살짝 기울인다 */
-  function setupSpotlight() {
-    function track(el) {
-      el.addEventListener("pointermove", function (e) {
-        var r = el.getBoundingClientRect();
-        el.style.setProperty("--mx", (e.clientX - r.left).toFixed(0) + "px");
-        el.style.setProperty("--my", (e.clientY - r.top).toFixed(0) + "px");
+  /* 커서 위치를 CSS 변수(--mx/--my)로 넘긴다 — 광원 효과는 CSS가 그린다 */
+  function track(el) {
+    el.addEventListener("pointermove", function (e) {
+      var r = el.getBoundingClientRect();
+      el.style.setProperty("--mx", (e.clientX - r.left).toFixed(0) + "px");
+      el.style.setProperty("--my", (e.clientY - r.top).toFixed(0) + "px");
+    });
+  }
+
+  /* 문서 연출 — 첫 화면 밖 블록은 스크롤로 떠오르고, 카드류는 커서 광원을 따른다 */
+  var docRevealObs = null;
+  function setupDocFx() {
+    if (docRevealObs) { docRevealObs.disconnect(); docRevealObs = null; }
+    if (!REDUCE && "IntersectionObserver" in window) {
+      var vh = window.innerHeight;
+      docRevealObs = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (!en.isIntersecting) return;
+          en.target.classList.add("in");
+          docRevealObs.unobserve(en.target);
+        });
+      }, { rootMargin: "0px 0px -6% 0px", threshold: 0.04 });
+      contentEl.querySelectorAll("h2, .code-block, .table-wrap, .callout, .mermaid, details, table.layout-cards").forEach(function (el) {
+        if (el.closest(".doc-hide, .doc-nav, .doc-hero")) return;
+        if (el.parentElement && el.parentElement.closest(".code-block, .table-wrap, .callout, details")) return;
+        if (el.getBoundingClientRect().top < vh) return;      // 첫 화면은 진입 애니메이션이 맡는다
+        el.classList.add("dr");
+        docRevealObs.observe(el);
       });
     }
+    if (FINE && !REDUCE) {
+      contentEl.querySelectorAll(".code-block, .callout, .mermaid, table.layout-cards td").forEach(function (el) {
+        el.classList.add("spot"); track(el);
+      });
+      pagerEl.querySelectorAll("a").forEach(function (el) { el.classList.add("spot"); track(el); });
+    }
+  }
+
+  /* 랜딩 스포트라이트 — 히어로 격자·벤토 광원 + 터미널 기울기 */
+  function setupSpotlight() {
     var hero = contentEl.querySelector(".lp-hero");
     if (hero) {
       track(hero);
@@ -584,7 +615,7 @@
       var lang = (String(code.className).match(/language-([\w-]+)/) || [])[1] || "code";
       var wrap = document.createElement("div"); wrap.className = "code-block";
       var head = document.createElement("div"); head.className = "code-head";
-      head.innerHTML = '<span class="code-lang">' + escapeHtml(lang) + '</span><button class="code-copy" type="button">복사</button>';
+      head.innerHTML = '<span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">' + escapeHtml(lang) + '</span><button class="code-copy" type="button">복사</button>';
       pre.parentNode.insertBefore(wrap, pre);
       wrap.appendChild(head); wrap.appendChild(pre);
       var btn = head.querySelector(".code-copy");
@@ -664,7 +695,7 @@
       if (group) {
         var eb = document.createElement("div");
         eb.className = "doc-eyebrow";
-        eb.innerHTML = escapeHtml(group) + (item.num && item.num !== "~" ? ' <span>' + escapeHtml(item.num) + "</span>" : "");
+        eb.innerHTML = '<i class="pulse"></i>' + escapeHtml(group) + (item.num && item.num !== "~" ? ' <span>' + escapeHtml(item.num) + "</span>" : "");
         h1.parentNode.insertBefore(eb, h1);
       }
     }
@@ -675,6 +706,18 @@
       if (next && next.tagName === "BLOCKQUOTE" && !next.classList.contains("callout")) {
         next.classList.add("doc-lead");
       }
+    }
+
+    // (2-b) 그룹 라벨 · 제목 · 리드를 헤더 하나로 묶고, 오로라와 큰 외곽선 번호를 깐다
+    if (h1) {
+      var hero = document.createElement("header");
+      hero.className = "doc-hero";
+      hero.innerHTML = '<div class="lp-aurora" aria-hidden="true"><i></i><i></i><i></i></div>' +
+        (item && item.num && /^\d+$/.test(item.num) ? '<span class="doc-ghost" aria-hidden="true">' + escapeHtml(item.num) + "</span>" : "");
+      var first = h1.previousElementSibling && h1.previousElementSibling.classList.contains("doc-eyebrow") ? h1.previousElementSibling : h1;
+      var lead = h1.nextElementSibling && h1.nextElementSibling.classList.contains("doc-lead") ? h1.nextElementSibling : null;
+      first.parentNode.insertBefore(hero, first);
+      [first, h1, lead].forEach(function (el) { if (el && el.parentNode !== hero) hero.appendChild(el); });
     }
 
     // (3) md 하단의 이전/목차/다음 줄은 GitHub용 — 사이트에는 사이드바와 페이저가 이미 있다
@@ -790,6 +833,7 @@
       });
       if (anchor) { setTimeout(scrollToAnchor, 70); }
       else { window.scrollTo(0, 0); }
+      setupDocFx();
       setupScrollSpy(toc);
       updateProgress();
     }).catch(function (err) {
