@@ -198,7 +198,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 .sidebar-foot a { color: var(--text-dim); }
 .sidebar-foot a:hover { color: var(--accent); text-decoration: none; }
 
-.main { flex: 1; min-width: 0; padding: 0 40px; }
+.main { flex: 1; min-width: 0; padding: 0 40px; overflow-x: clip; }
 .content { max-width: var(--maxw); margin: 0 auto; padding: 48px 0 8px; }
 .loading { color: var(--text-faint); padding: 60px 0; display: flex; align-items: center; gap: 10px; font-size: 14px; }
 .spin { width: 14px; height: 14px; border: 1.5px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .8s linear infinite; }
@@ -1041,7 +1041,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 /* ===== Reduced motion ===== */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
   .reveal { opacity: 1; transform: none; filter: none; }
   .lp-flow::before { transform: scaleX(1); }
   .lp-steps::before { transform: scaleY(1); }
